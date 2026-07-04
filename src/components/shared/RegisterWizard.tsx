@@ -3,6 +3,7 @@ import { RegisterDetailsStep } from "@/components/shared/RegisterDetailsStep";
 import { RegisterStepper } from "@/components/shared/RegisterStepper";
 import { RoleSelectionStep } from "@/components/shared/RoleSelectionStep";
 import type {
+  RegisterConfirmationData,
   RegisterDetailsFormData,
   RegisterStep,
   UserRole,
@@ -11,22 +12,30 @@ import type {
 type RegisterWizardProps = {
   step: RegisterStep;
   selectedRole: UserRole | null;
+  confirmation: RegisterConfirmationData | null;
   onRoleSelect: (role: UserRole) => void;
   onContinueFromRole: () => void;
   onBackToRole: () => void;
   onSubmitDetails: (data: RegisterDetailsFormData) => void;
+  onResendVerification: () => void;
   isLoading: boolean;
+  isResending: boolean;
+  resendMessage: string | null;
   error: string | null;
 };
 
 export function RegisterWizard({
   step,
   selectedRole,
+  confirmation,
   onRoleSelect,
   onContinueFromRole,
   onBackToRole,
   onSubmitDetails,
+  onResendVerification,
   isLoading,
+  isResending,
+  resendMessage,
   error,
 }: RegisterWizardProps) {
   return (
@@ -48,7 +57,15 @@ export function RegisterWizard({
           error={error}
         />
       ) : null}
-      {step === 3 ? <RegisterConfirmedStep /> : null}
+      {step === 3 && confirmation ? (
+        <RegisterConfirmedStep
+          first_name={confirmation.first_name}
+          email={confirmation.email}
+          onResendVerification={onResendVerification}
+          isResending={isResending}
+          resendMessage={resendMessage}
+        />
+      ) : null}
     </div>
   );
 }

@@ -1,33 +1,66 @@
 import Link from "next/link";
-import { CheckCircle2 } from "lucide-react";
+import { Check } from "lucide-react";
 
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
+import type { RegisterConfirmationData } from "@/types/auth";
 
-export function RegisterConfirmedStep() {
+type RegisterConfirmedStepProps = RegisterConfirmationData & {
+  onResendVerification: () => void;
+  isResending: boolean;
+  resendMessage: string | null;
+};
+
+export function RegisterConfirmedStep({
+  first_name,
+  email,
+  onResendVerification,
+  isResending,
+  resendMessage,
+}: RegisterConfirmedStepProps) {
   return (
-    <Card className="border border-slate-100 shadow-sm">
+    <Card className="rounded-2xl border border-slate-100 shadow-sm">
       <CardContent className="space-y-6 p-8 text-center">
         <div className="flex flex-col items-center space-y-4">
-          <div className="flex size-16 items-center justify-center rounded-full bg-green-50">
-            <CheckCircle2 className="size-8 text-green-600" />
+          <div className="flex size-16 items-center justify-center rounded-full bg-[#2C9E9E]">
+            <Check className="size-8 text-white" strokeWidth={3} />
           </div>
-          <div className="space-y-1">
-            <h1 className="text-2xl font-bold text-[#1A365D]">
+          <div className="space-y-3">
+            <h1 className="text-2xl font-bold text-[#2D3748]">
               Account Created!
             </h1>
-            <p className="text-sm text-slate-500">
-              Your SAWA account has been created successfully. Sign in to get
-              started.
+            <p className="text-sm leading-relaxed text-slate-500">
+              Welcome to SAWA,{" "}
+              <span className="font-semibold text-[#2D3748]">{first_name}</span>
+              . We&apos;ve sent a verification email to{" "}
+              <span className="font-semibold text-[#2D3748]">{email}</span>.
+              Please verify your address to activate your account.
             </p>
           </div>
         </div>
-        <Link href="/login" className="block">
+
+        <p className="text-sm text-slate-500">
+          Didn&apos;t receive it?{" "}
+          <button
+            type="button"
+            onClick={onResendVerification}
+            disabled={isResending}
+            className="text-[#2B6CB0] hover:underline disabled:opacity-50"
+          >
+            {isResending ? "Sending..." : "Resend verification email"}
+          </button>
+        </p>
+
+        {resendMessage ? (
+          <p className="text-sm text-[#2C9E9E]">{resendMessage}</p>
+        ) : null}
+
+        <Link href="/" className="block">
           <Button
             type="button"
             className="w-full rounded-lg bg-[#1A365D] py-2.5 text-white hover:bg-[#2a4a7f]"
           >
-            Sign In →
+            Go to Dashboard →
           </Button>
         </Link>
       </CardContent>
