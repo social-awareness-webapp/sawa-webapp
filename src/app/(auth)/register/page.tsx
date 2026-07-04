@@ -1,5 +1,4 @@
 import type { Metadata } from "next";
-import Link from "next/link";
 
 import { RegisterContainer } from "@/containers/RegisterContainer";
 
@@ -10,16 +9,8 @@ export const metadata: Metadata = {
 
 export default function RegisterPage() {
   return (
-    <div className="flex flex-1 flex-col items-center justify-center px-4 py-12">
-      <div className="w-full max-w-md space-y-6">
-        <RegisterContainer />
-        <p className="text-center text-sm text-muted-foreground">
-          Already have an account?{" "}
-          <Link href="/login" className="font-medium text-primary hover:underline">
-            Login
-          </Link>
-        </p>
-      </div>
-    </div>
+    <main className="mx-auto max-w-lg px-4 py-10 sm:py-16">
+      <RegisterContainer />
+    </main>
   );
 }

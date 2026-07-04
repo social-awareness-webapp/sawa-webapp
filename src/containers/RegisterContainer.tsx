@@ -1,18 +1,26 @@
 "use client";
 
 import { useState } from "react";
-import { useRouter } from "next/navigation";
 
-import { RegisterForm } from "@/components/shared/RegisterForm";
+import { RegisterWizard } from "@/components/shared/RegisterWizard";
 import { registerUser } from "@/services/auth.service";
-import type { RegisterFormData } from "@/types/auth";
+import type {
+  RegisterDetailsFormData,
+  RegisterStep,
+  UserRole,
+} from "@/types/auth";
 
 export function RegisterContainer() {
-  const router = useRouter();
+  const [step, setStep] = useState<RegisterStep>(1);
+  const [selectedRole, setSelectedRole] = useState<UserRole | null>(null);
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
-  const handleSubmit = async (data: RegisterFormData) => {
+  const handleSubmitDetails = async (data: RegisterDetailsFormData) => {
+    if (!selectedRole) {
+      return;
+    }
+
     setIsLoading(true);
     setError(null);
 
@@ -20,7 +28,7 @@ export function RegisterContainer() {
       full_name: data.full_name,
       email: data.email,
       password: data.password,
-      role: data.role,
+      role: selectedRole,
     });
 
     if (registerError) {
@@ -29,14 +37,20 @@ export function RegisterContainer() {
       return;
     }
 
-    router.push("/login?registered=true");
+    setStep(3);
+    setIsLoading(false);
   };
 
   return (
-    <RegisterForm
-      onSubmit={handleSubmit}
+    <RegisterWizard
+      step={step}
+      selectedRole={selectedRole}
+      onRoleSelect={setSelectedRole}
+      onContinueFromRole={() => setStep(2)}
+      onBackToRole={() => setStep(1)}
+      onSubmitDetails={handleSubmitDetails}
       isLoading={isLoading}
       error={error}
     />
   );
-};
+}
