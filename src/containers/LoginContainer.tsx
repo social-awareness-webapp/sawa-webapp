@@ -31,14 +31,17 @@ export function LoginContainer() {
       return;
     }
 
-    router.push("/");
+    const redirect = searchParams.get("redirect") || "/";
+    router.refresh();
+    router.push(redirect);
   };
 
   const handleGoogleSignIn = async () => {
     setIsGoogleLoading(true);
     setError(null);
 
-    const redirectTo = `${window.location.origin}/auth/callback`;
+    const redirect = searchParams.get("redirect") || "/";
+    const redirectTo = `${window.location.origin}/auth/callback?next=${encodeURIComponent(redirect)}`;
     const { error: googleError } = await signInWithGoogle(redirectTo);
 
     if (googleError) {

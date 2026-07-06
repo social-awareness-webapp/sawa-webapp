@@ -1,8 +1,7 @@
 import Link from "next/link";
 import { Megaphone } from "lucide-react";
 
-import { buttonVariants } from "@/components/ui/button";
-import { cn } from "@/lib/utils";
+import { NavbarAuthContainer } from "@/containers/NavbarAuthContainer";
 
 export function PublicNavbar() {
   return (
@@ -27,24 +26,7 @@ export function PublicNavbar() {
           </Link>
         </nav>
         <div className="flex items-center gap-3">
-          <Link
-            href="/login"
-            className={cn(
-              buttonVariants({ variant: "ghost" }),
-              "text-[#1A365D] hover:bg-[#1A365D]/5"
-            )}
-          >
-            Sign In
-          </Link>
-          <Link
-            href="/register"
-            className={cn(
-              buttonVariants({ variant: "default" }),
-              "bg-[#1A365D] text-white hover:bg-[#2a4a7f]"
-            )}
-          >
-            Get Started
-          </Link>
+          <NavbarAuthContainer />
         </div>
       </div>
     </header>
