@@ -1,5 +1,7 @@
 import { expect, test } from "@playwright/test";
 
+import { expectLoggedOutNavbar, navbar } from "./helpers";
+
 test.describe("S0 — Homepage", () => {
   test.beforeEach(async ({ page }) => {
     await page.goto("/");
@@ -14,18 +16,20 @@ test.describe("S0 — Homepage", () => {
       })
     ).toBeVisible();
 
-    await expect(page.getByText("Community-Powered Awareness")).toBeVisible();
+    await expect(
+      page.getByText("Community-Powered Awareness", { exact: true })
+    ).toBeVisible();
     await expect(
       page.getByRole("link", { name: "Explore Campaigns" })
     ).toBeVisible();
     await expect(
-      page.getByRole("link", { name: "Start a Campaign" })
+      page.getByRole("link", { name: "Start a Campaign" }).first()
     ).toHaveAttribute("href", "/register");
 
     await expect(page.getByText("2,400+")).toBeVisible();
-    await expect(page.getByText("Community Members")).toBeVisible();
+    await expect(page.getByText("Community Members", { exact: true })).toBeVisible();
     await expect(page.getByText("141")).toBeVisible();
-    await expect(page.getByText("Active Campaigns")).toBeVisible();
+    await expect(page.getByText("Active Campaigns", { exact: true })).toBeVisible();
 
     await expect(
       page.getByRole("heading", { name: "Featured Campaigns" })
@@ -73,7 +77,6 @@ test.describe("S0 — Homepage", () => {
   });
 
   test("shows public navbar auth actions when logged out", async ({ page }) => {
-    await expect(page.getByRole("link", { name: "Sign In" })).toBeVisible();
-    await expect(page.getByRole("link", { name: "Get Started" })).toBeVisible();
+    await expectLoggedOutNavbar(page);
   });
 });

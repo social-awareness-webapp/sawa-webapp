@@ -24,8 +24,15 @@ Manual and automated design verification for all Figma Make prototype screens im
 
 ```bash
 npx playwright install
+```
+
+**Run tests** (start or reuse `npm run dev` on port 3000 first)
+
+```bash
 npm run test:design
 ```
+
+If auth redirect tests fail after middleware changes, restart the dev server so `src/middleware.ts` is picked up.
 
 ---
 

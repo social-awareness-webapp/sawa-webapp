@@ -1,12 +1,16 @@
 import { expect, test } from "@playwright/test";
 
+import { navbar, passwordInput } from "./helpers";
+
 test.describe("S1 — Login", () => {
   test.beforeEach(async ({ page }) => {
     await page.goto("/login");
   });
 
   test("renders login card layout and form fields", async ({ page }) => {
-    await expect(page.getByRole("link", { name: "SAWA" })).toBeVisible();
+    await expect(
+      navbar(page).getByRole("link", { name: "SAWA", exact: true })
+    ).toBeVisible();
     await expect(page.getByRole("link", { name: "← Back to Home" })).toBeVisible();
 
     await expect(
@@ -17,7 +21,7 @@ test.describe("S1 — Login", () => {
     ).toBeVisible();
 
     await expect(page.getByLabel("Email Address *")).toBeVisible();
-    await expect(page.getByLabel("Password *")).toBeVisible();
+    await expect(passwordInput(page)).toBeVisible();
     await expect(page.getByRole("link", { name: "Forgot password" })).toHaveAttribute(
       "href",
       "/forgot-password"
@@ -35,7 +39,7 @@ test.describe("S1 — Login", () => {
   });
 
   test("toggles password visibility", async ({ page }) => {
-    const password = page.getByLabel("Password *");
+    const password = passwordInput(page);
     await password.fill("testpassword");
     await expect(password).toHaveAttribute("type", "password");
 
