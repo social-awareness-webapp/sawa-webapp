@@ -1,8 +1,9 @@
 import Link from "next/link";
 import { Check } from "lucide-react";
 
-import { Button } from "@/components/ui/button";
+import { buttonVariants } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
+import { cn } from "@/lib/utils";
 import type { RegisterConfirmationData } from "@/types/auth";
 
 type RegisterConfirmedStepProps = RegisterConfirmationData & {
@@ -55,13 +56,14 @@ export function RegisterConfirmedStep({
           <p className="text-sm text-[#2C9E9E]">{resendMessage}</p>
         ) : null}
 
-        <Link href="/" className="block">
-          <Button
-            type="button"
-            className="w-full rounded-lg bg-[#1A365D] py-2.5 text-white hover:bg-[#2a4a7f]"
-          >
-            Go to Dashboard →
-          </Button>
+        <Link
+          href="/"
+          className={cn(
+            buttonVariants({ variant: "default" }),
+            "w-full rounded-lg bg-[#1A365D] py-2.5 text-white hover:bg-[#2a4a7f]"
+          )}
+        >
+          Go to Dashboard →
         </Link>
       </CardContent>
     </Card>

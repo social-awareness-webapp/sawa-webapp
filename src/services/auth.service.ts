@@ -46,3 +46,9 @@ export async function resendVerificationEmail(email: string) {
     email,
   });
 }
+
+export async function logoutUser() {
+  const supabase = createClient();
+
+  return supabase.auth.signOut();
+}
