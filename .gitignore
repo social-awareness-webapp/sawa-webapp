@@ -22,6 +22,9 @@
 
 # production
 /build
+/supabase
+/scripts
+/scripts/seed-super-admin.mjs
 
 # misc
 .DS_Store

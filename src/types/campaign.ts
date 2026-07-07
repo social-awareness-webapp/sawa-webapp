@@ -18,3 +18,38 @@ export type StatItem = {
   value: string;
   label: string;
 };
+
+export type CampaignUserRelation = {
+  full_name: string;
+};
+
+export type CampaignRow = {
+  id: string;
+  title: string;
+  description: string;
+  category: CampaignCategory | null;
+  campaign_type: string;
+  status: string;
+  created_by: string;
+  created_at: string;
+  updated_at: string;
+  slug: string | null;
+  organization: string | null;
+  progress_percent: number | null;
+  ends_at: string | null;
+  users: CampaignUserRelation | CampaignUserRelation[] | null;
+};
+
+export type FetchCampaignsParams = {
+  page?: number;
+  pageSize?: number;
+  category?: CampaignCategory | "All";
+};
+
+export type PaginatedCampaigns = {
+  campaigns: Campaign[];
+  page: number;
+  pageSize: number;
+  total: number;
+  totalPages: number;
+};

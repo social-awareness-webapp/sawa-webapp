@@ -1,40 +1,47 @@
 "use client";
 
-import { useMemo, useState } from "react";
+import { useQuery } from "@tanstack/react-query";
+import { useEffect, useState } from "react";
 
 import { FeaturedCampaigns } from "@/components/shared/FeaturedCampaigns";
 import {
   campaignCategories,
   type CampaignFilterCategory,
 } from "@/data/mock-campaigns";
-import type { Campaign } from "@/types/campaign";
+import { fetchCampaigns } from "@/services/campaigns.service";
 
-type FeaturedCampaignsContainerProps = {
-  campaigns: Campaign[];
-};
+const HOMEPAGE_PAGE_SIZE = 6;
 
-export function FeaturedCampaignsContainer({
-  campaigns,
-}: FeaturedCampaignsContainerProps) {
+export function FeaturedCampaignsContainer() {
   const [activeCategory, setActiveCategory] =
     useState<CampaignFilterCategory>("All");
+  const [page, setPage] = useState(1);
 
-  const filteredCampaigns = useMemo(() => {
-    if (activeCategory === "All") {
-      return campaigns;
-    }
+  useEffect(() => {
+    setPage(1);
+  }, [activeCategory]);
 
-    return campaigns.filter(
-      (campaign) => campaign.category === activeCategory
-    );
-  }, [activeCategory, campaigns]);
+  const { data, isLoading, isError } = useQuery({
+    queryKey: ["campaigns", { page, category: activeCategory }],
+    queryFn: () =>
+      fetchCampaigns({
+        page,
+        pageSize: HOMEPAGE_PAGE_SIZE,
+        category: activeCategory,
+      }),
+  });
 
   return (
     <FeaturedCampaigns
-      campaigns={filteredCampaigns}
+      campaigns={data?.campaigns ?? []}
       categories={campaignCategories}
       activeCategory={activeCategory}
       onCategoryChange={setActiveCategory}
+      isLoading={isLoading}
+      isError={isError}
+      page={data?.page ?? page}
+      totalPages={data?.totalPages ?? 0}
+      onPageChange={setPage}
     />
   );
 }
