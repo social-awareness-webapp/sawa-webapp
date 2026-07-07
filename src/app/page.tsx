@@ -7,7 +7,7 @@ import { PublicNavbar } from "@/components/shared/PublicNavbar";
 import { SiteFooter } from "@/components/shared/SiteFooter";
 import { StatsStrip } from "@/components/shared/StatsStrip";
 import { FeaturedCampaignsContainer } from "@/containers/FeaturedCampaignsContainer";
-import { homepageStats, mockCampaigns } from "@/data/mock-campaigns";
+import { homepageStats } from "@/data/mock-campaigns";
 
 export const metadata: Metadata = {
   title: "SAWA | Community-Powered Awareness",
@@ -21,7 +21,7 @@ export default function HomePage() {
       <PublicNavbar />
       <HeroSection />
       <StatsStrip stats={homepageStats} />
-      <FeaturedCampaignsContainer campaigns={mockCampaigns} />
+      <FeaturedCampaignsContainer />
       <HowItWorksSection />
       <CtaSection />
       <SiteFooter />
