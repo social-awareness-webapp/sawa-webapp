@@ -20,9 +20,9 @@ export function DashboardWelcomeBanner({
   summary,
 }: DashboardWelcomeBannerProps) {
   return (
-    <section className="flex flex-col gap-4 rounded-xl border border-slate-100 bg-slate-50 p-6 sm:flex-row sm:items-center sm:justify-between">
+    <section className="flex flex-col gap-4 rounded-xl border border-slate-100 bg-slate-50 p-4 sm:flex-row sm:items-center sm:justify-between sm:p-6">
       <div className="space-y-3">
-        <h1 className="text-2xl font-bold text-[#1A365D]">
+        <h1 className="text-xl font-bold text-[#1A365D] sm:text-2xl">
           {greeting}, {firstName} {"\u{1F44B}"}
         </h1>
         <p className="text-sm text-slate-500">

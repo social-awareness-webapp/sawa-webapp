@@ -53,9 +53,9 @@ export function DashboardRecentCampaigns({
   campaigns,
 }: DashboardRecentCampaignsProps) {
   return (
-    <Card className="border border-slate-100 bg-white p-6 shadow-sm ring-0">
-      <div className="flex items-center justify-between">
-        <h2 className="text-lg font-semibold text-[#1A365D]">
+    <Card className="border border-slate-100 bg-white p-4 shadow-sm ring-0 sm:p-6">
+      <div className="flex items-center justify-between gap-3">
+        <h2 className="text-base font-semibold text-[#1A365D] sm:text-lg">
           Recent Campaigns
         </h2>
         <Link

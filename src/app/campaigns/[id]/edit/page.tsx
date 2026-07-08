@@ -1,5 +1,6 @@
 import { notFound, redirect } from "next/navigation";
 
+import { DashboardShell } from "@/components/shared/DashboardShell";
 import { EditCampaignContainer } from "@/containers/EditCampaignContainer";
 import { getCampaignByIdOrSlug } from "@/lib/campaigns/get-campaign";
 import { getCurrentUserProfile } from "@/lib/supabase/server";
@@ -27,5 +28,9 @@ export default async function EditCampaignPage({
     notFound();
   }
 
-  return <EditCampaignContainer campaign={campaign} />;
+  return (
+    <DashboardShell>
+      <EditCampaignContainer campaign={campaign} />
+    </DashboardShell>
+  );
 }

@@ -34,12 +34,16 @@ export function DashboardStatCards({ stats }: DashboardStatCardsProps) {
             key={stat.key}
             className="border border-slate-100 bg-white shadow-sm ring-0"
           >
-            <CardContent className="space-y-3 p-5">
-              <div className="flex items-center justify-between">
-                <span className="text-sm text-slate-500">{stat.label}</span>
-                <Icon className={`size-5 ${colorClass}`} />
+            <CardContent className="space-y-3 p-4 sm:p-5">
+              <div className="flex items-center justify-between gap-2">
+                <span className="text-xs text-slate-500 sm:text-sm">
+                  {stat.label}
+                </span>
+                <Icon className={`size-5 shrink-0 ${colorClass}`} />
               </div>
-              <p className="text-3xl font-bold text-[#1A365D]">{stat.value}</p>
+              <p className="text-2xl font-bold text-[#1A365D] sm:text-3xl">
+                {stat.value}
+              </p>
             </CardContent>
           </Card>
         );

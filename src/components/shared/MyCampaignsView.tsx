@@ -244,7 +244,9 @@ export function MyCampaignsView({
     <div className="space-y-6">
       <div className="flex flex-col gap-4 sm:flex-row sm:items-start sm:justify-between">
         <div className="space-y-1">
-          <h1 className="text-2xl font-bold text-[#1A365D]">My Campaigns</h1>
+          <h1 className="text-xl font-bold text-[#1A365D] sm:text-2xl">
+            My Campaigns
+          </h1>
           <p className="text-sm text-slate-500">
             Manage and track all your submitted campaigns.
           </p>

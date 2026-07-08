@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 
+import { DashboardShell } from "@/components/shared/DashboardShell";
 import { PostCampaignContainer } from "@/containers/PostCampaignContainer";
 
 export const metadata: Metadata = {
@@ -9,8 +10,8 @@ export const metadata: Metadata = {
 
 export default function NewCampaignPage() {
   return (
-    <div className="min-h-screen bg-slate-50">
+    <DashboardShell>
       <PostCampaignContainer />
-    </div>
+    </DashboardShell>
   );
 }
