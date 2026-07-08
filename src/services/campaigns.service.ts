@@ -37,13 +37,15 @@ export async function fetchCampaigns(
         organization,
         progress_percent,
         ends_at,
+        banner_image_url,
         users!created_by (
           full_name
         )
       `,
       { count: "exact" }
     )
-    .eq("status", "approved")
+    // Treat null as "not archived" so rows created before the backfill still show.
+    .or("is_archived.is.null,is_archived.eq.false")
     .order("created_at", { ascending: false })
     .range(from, to);
 
@@ -78,7 +80,7 @@ export async function fetchMyCampaigns(
     .from("campaigns")
     .select("id, title, status, category, created_at, ends_at, slug")
     .eq("created_by", ownerId)
-    .eq("is_archived", false)
+    .or("is_archived.is.null,is_archived.eq.false")
     .order("created_at", { ascending: false });
 
   if (error) {

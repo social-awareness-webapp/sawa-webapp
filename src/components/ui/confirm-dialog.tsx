@@ -36,7 +36,6 @@ export function ConfirmDialog({
     <AlertDialog.Root
       open={open}
       onOpenChange={(nextOpen) => {
-        // Prevent closing while the confirm action is in flight.
         if (!isLoading) {
           onOpenChange(nextOpen);
         }
@@ -75,7 +74,7 @@ export function ConfirmDialog({
                 "inline-flex items-center justify-center gap-2 rounded-lg px-4 py-2 text-sm font-medium text-white transition-colors disabled:opacity-70",
                 tone === "danger"
                   ? "bg-red-600 hover:bg-red-700"
-                  : "bg-[#1A365D] hover:bg-[#2a4a7f]"
+                  : "bg-[#1A365D] hover:bg-[#2a4a7f]",
               )}
             >
               {isLoading ? <Loader2 className="size-4 animate-spin" /> : null}

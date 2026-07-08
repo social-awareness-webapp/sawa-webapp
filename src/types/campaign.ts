@@ -12,6 +12,7 @@ export type Campaign = {
   category: CampaignCategory;
   progressPercent: number;
   daysLeft: number;
+  bannerImageUrl: string | null;
 };
 
 export type StatItem = {
@@ -37,6 +38,7 @@ export type CampaignRow = {
   organization: string | null;
   progress_percent: number | null;
   ends_at: string | null;
+  banner_image_url: string | null;
   users: CampaignUserRelation | CampaignUserRelation[] | null;
 };
 
