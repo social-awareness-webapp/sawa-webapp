@@ -58,6 +58,11 @@ export async function POST(request: Request) {
       target_audience: input.targetAudience || null,
       starts_at: input.startDate || null,
       ends_at: input.endDate || null,
+      banner_image_url: input.bannerImageUrl || null,
+      supporting_documents:
+        input.supportingDocuments && input.supportingDocuments.length > 0
+          ? input.supportingDocuments
+          : null,
       slug: slugifyCampaignTitle(input.title),
       progress_percent: 0,
     })

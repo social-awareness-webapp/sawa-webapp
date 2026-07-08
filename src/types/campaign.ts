@@ -56,10 +56,17 @@ export type CreateCampaignInput = {
   targetAudience?: string;
   startDate?: string;
   endDate?: string;
+  bannerImageUrl?: string;
+  supportingDocuments?: string[];
   status: CampaignStatus;
 };
 
 export type CampaignDraftInput = Omit<CreateCampaignInput, "status">;
+
+export type CampaignMediaFiles = {
+  banner: File | null;
+  supportingDocuments: File[];
+};
 
 export type PaginatedCampaigns = {
   campaigns: Campaign[];

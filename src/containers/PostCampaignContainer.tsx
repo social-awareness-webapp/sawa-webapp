@@ -6,20 +6,48 @@ import { useRouter } from "next/navigation";
 import { ChevronLeft } from "lucide-react";
 
 import { PostCampaignForm } from "@/components/shared/PostCampaignForm";
+import { useAuth } from "@/providers/AuthProvider";
+import { uploadCampaignMedia } from "@/services/campaign-media.service";
 import { createCampaign } from "@/services/campaigns.service";
-import type { CampaignDraftInput, CampaignStatus } from "@/types/campaign";
+import type {
+  CampaignDraftInput,
+  CampaignMediaFiles,
+  CampaignStatus,
+} from "@/types/campaign";
 
 export function PostCampaignContainer() {
   const router = useRouter();
+  const { user } = useAuth();
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
-  const submit = async (input: CampaignDraftInput, status: CampaignStatus) => {
+  const submit = async (
+    input: CampaignDraftInput,
+    media: CampaignMediaFiles,
+    status: CampaignStatus
+  ) => {
+    if (!user) {
+      setError("You must be signed in to post a campaign.");
+      return;
+    }
+
     setIsSubmitting(true);
     setError(null);
 
     try {
-      await createCampaign({ ...input, status });
+      const { bannerImageUrl, supportingDocuments } = await uploadCampaignMedia({
+        userId: user.id,
+        banner: media.banner,
+        supportingFiles: media.supportingDocuments,
+      });
+
+      await createCampaign({
+        ...input,
+        bannerImageUrl,
+        supportingDocuments,
+        status,
+      });
+
       router.refresh();
       router.push("/dashboard");
     } catch (submitError) {
@@ -52,8 +80,8 @@ export function PostCampaignContainer() {
       </div>
 
       <PostCampaignForm
-        onSubmit={(input) => submit(input, "pending")}
-        onSaveDraft={(input) => submit(input, "draft")}
+        onSubmit={(input, media) => submit(input, media, "pending")}
+        onSaveDraft={(input, media) => submit(input, media, "draft")}
         onCancel={() => router.push("/dashboard")}
         isSubmitting={isSubmitting}
         error={error}

@@ -30,6 +30,8 @@ export const campaignPayloadSchema = z
     targetAudience: optionalText,
     startDate: optionalText,
     endDate: optionalText,
+    bannerImageUrl: z.string().url().optional(),
+    supportingDocuments: z.array(z.string().url()).max(3).optional(),
     status: z.enum(["pending", "draft"]),
   })
   .superRefine((data, ctx) => {

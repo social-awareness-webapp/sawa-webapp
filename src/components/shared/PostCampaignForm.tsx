@@ -33,7 +33,11 @@ import {
   TITLE_MAX_LENGTH,
   TITLE_MIN_LENGTH,
 } from "@/lib/campaigns/campaign-schema";
-import type { CampaignCategory, CampaignDraftInput } from "@/types/campaign";
+import type {
+  CampaignCategory,
+  CampaignDraftInput,
+  CampaignMediaFiles,
+} from "@/types/campaign";
 
 const formSchema = z
   .object({
@@ -93,8 +97,8 @@ function toDraftInput(values: PostCampaignFormValues): CampaignDraftInput {
 }
 
 type PostCampaignFormProps = {
-  onSubmit: (input: CampaignDraftInput) => void;
-  onSaveDraft: (input: CampaignDraftInput) => void;
+  onSubmit: (input: CampaignDraftInput, media: CampaignMediaFiles) => void;
+  onSaveDraft: (input: CampaignDraftInput, media: CampaignMediaFiles) => void;
   onCancel: () => void;
   isSubmitting: boolean;
   error: string | null;
@@ -117,6 +121,11 @@ export function PostCampaignForm({
 
   const titleLength = form.watch("title")?.length ?? 0;
 
+  const collectMedia = (): CampaignMediaFiles => ({
+    banner: bannerFile[0] ?? null,
+    supportingDocuments: supportingFiles,
+  });
+
   const handleSaveDraft = () => {
     const values = form.getValues();
 
@@ -127,7 +136,7 @@ export function PostCampaignForm({
       return;
     }
 
-    onSaveDraft(toDraftInput(values));
+    onSaveDraft(toDraftInput(values), collectMedia());
   };
 
   return (
@@ -143,7 +152,7 @@ export function PostCampaignForm({
         <Form {...form}>
           <form
             onSubmit={form.handleSubmit((values) =>
-              onSubmit(toDraftInput(values))
+              onSubmit(toDraftInput(values), collectMedia())
             )}
             className="space-y-5"
           >
