@@ -10,7 +10,11 @@ export type DashboardStat = {
   value: string;
 };
 
-export type DashboardCampaignStatus = "approved" | "pending" | "rejected";
+export type DashboardCampaignStatus =
+  | "approved"
+  | "pending"
+  | "rejected"
+  | "draft";
 
 export type DashboardCampaign = {
   id: string;
@@ -29,6 +33,20 @@ export type OwnerCampaignRow = {
   id: string;
   title: string;
   status: string;
+  category: string | null;
   created_at: string;
+  ends_at: string | null;
+  slug: string | null;
+};
+
+// Richer per-owner campaign shape used by the "My Campaigns" screen.
+export type OwnerCampaign = {
+  id: string;
+  title: string;
+  category: string | null;
+  status: DashboardCampaignStatus;
+  submittedDate: string;
+  endDate: string | null;
+  supporters: number | null;
   slug: string | null;
 };

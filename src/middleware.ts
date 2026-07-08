@@ -29,7 +29,10 @@ function isAdminRoute(pathname: string) {
 }
 
 function isComposeCampaignRoute(pathname: string) {
-  return matchesPrefix(pathname, composeCampaignPrefixes);
+  return (
+    matchesPrefix(pathname, composeCampaignPrefixes) ||
+    (pathname.startsWith("/campaigns/") && pathname.endsWith("/edit"))
+  );
 }
 
 function isAuthRoute(pathname: string) {

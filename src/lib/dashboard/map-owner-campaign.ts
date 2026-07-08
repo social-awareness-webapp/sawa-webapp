@@ -1,10 +1,11 @@
 import type {
   DashboardCampaign,
   DashboardCampaignStatus,
+  OwnerCampaign,
   OwnerCampaignRow,
 } from "@/types/dashboard";
 
-function toDashboardStatus(status: string): DashboardCampaignStatus {
+export function toDashboardStatus(status: string): DashboardCampaignStatus {
   if (status === "approved") {
     return "approved";
   }
@@ -13,14 +14,32 @@ function toDashboardStatus(status: string): DashboardCampaignStatus {
     return "rejected";
   }
 
+  if (status === "draft") {
+    return "draft";
+  }
+
   return "pending";
 }
 
-export function mapOwnerCampaignRow(row: OwnerCampaignRow): DashboardCampaign {
+export function mapOwnerCampaignRow(row: OwnerCampaignRow): OwnerCampaign {
   return {
     id: row.id,
     title: row.title,
+    category: row.category,
     status: toDashboardStatus(row.status),
-    startDate: row.created_at.slice(0, 10),
+    submittedDate: row.created_at ? row.created_at.slice(0, 10) : "",
+    endDate: row.ends_at ? row.ends_at.slice(0, 10) : null,
+    // No supporters/analytics data source exists yet.
+    supporters: null,
+    slug: row.slug,
+  };
+}
+
+export function toDashboardCampaign(campaign: OwnerCampaign): DashboardCampaign {
+  return {
+    id: campaign.id,
+    title: campaign.title,
+    status: campaign.status,
+    startDate: campaign.submittedDate,
   };
 }

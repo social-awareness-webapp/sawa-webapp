@@ -7,6 +7,7 @@ import { DashboardRecentCampaigns } from "@/components/shared/DashboardRecentCam
 import { DashboardStatCards } from "@/components/shared/DashboardStatCards";
 import { DashboardWelcomeBanner } from "@/components/shared/DashboardWelcomeBanner";
 import { Card } from "@/components/ui/card";
+import { toDashboardCampaign } from "@/lib/dashboard/map-owner-campaign";
 import { useAuth } from "@/providers/AuthProvider";
 import { fetchMyCampaigns } from "@/services/campaigns.service";
 import type { DashboardStat, DashboardSummary } from "@/types/dashboard";
@@ -33,23 +34,29 @@ export function DashboardContainer({
 
   const campaigns = data ?? [];
   const approvedCount = campaigns.filter(
-    (campaign) => campaign.status === "approved"
+    (campaign) => campaign.status === "approved",
   ).length;
   const pendingCount = campaigns.filter(
-    (campaign) => campaign.status === "pending"
+    (campaign) => campaign.status === "pending",
   ).length;
 
   const summary: DashboardSummary = {
     activeCount: approvedCount,
     pendingCount,
-    // No supporters/analytics data source exists yet, so this stays 0 until
-    // one is available.
     supporterCount: 0,
   };
 
   const stats: DashboardStat[] = [
-    { key: "myCampaigns", label: "My Campaigns", value: String(campaigns.length) },
-    { key: "pendingReview", label: "Pending Review", value: String(pendingCount) },
+    {
+      key: "myCampaigns",
+      label: "My Campaigns",
+      value: String(campaigns.length),
+    },
+    {
+      key: "pendingReview",
+      label: "Pending Review",
+      value: String(pendingCount),
+    },
     { key: "totalSupporters", label: "Total Supporters", value: "0" },
     { key: "reachThisMonth", label: "Reach This Month", value: "0" },
   ];
@@ -74,7 +81,9 @@ export function DashboardContainer({
         <>
           <DashboardStatCards stats={stats} />
           <DashboardRecentCampaigns
-            campaigns={campaigns.slice(0, RECENT_CAMPAIGNS_LIMIT)}
+            campaigns={campaigns
+              .slice(0, RECENT_CAMPAIGNS_LIMIT)
+              .map(toDashboardCampaign)}
           />
         </>
       )}

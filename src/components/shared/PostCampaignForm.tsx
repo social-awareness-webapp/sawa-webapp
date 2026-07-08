@@ -69,7 +69,7 @@ const formSchema = z
     path: ["confirmGuidelines"],
   });
 
-type PostCampaignFormValues = z.infer<typeof formSchema>;
+export type PostCampaignFormValues = z.infer<typeof formSchema>;
 
 const defaultValues: PostCampaignFormValues = {
   title: "",
@@ -102,6 +102,11 @@ type PostCampaignFormProps = {
   onCancel: () => void;
   isSubmitting: boolean;
   error: string | null;
+  initialValues?: Partial<PostCampaignFormValues>;
+  submitLabel?: string;
+  submittingLabel?: string;
+  existingBannerUrl?: string | null;
+  existingDocuments?: string[];
 };
 
 export function PostCampaignForm({
@@ -110,10 +115,15 @@ export function PostCampaignForm({
   onCancel,
   isSubmitting,
   error,
+  initialValues,
+  submitLabel = "Submit for Review",
+  submittingLabel = "Submitting...",
+  existingBannerUrl = null,
+  existingDocuments = [],
 }: PostCampaignFormProps) {
   const form = useForm<PostCampaignFormValues>({
     resolver: zodResolver(formSchema),
-    defaultValues,
+    defaultValues: { ...defaultValues, ...initialValues },
   });
 
   const [bannerFile, setBannerFile] = useState<File[]>([]);
@@ -319,6 +329,17 @@ export function PostCampaignForm({
               <p className="text-sm font-medium text-[#2D3748]">
                 Upload Banner Image
               </p>
+              {existingBannerUrl && bannerFile.length === 0 ? (
+                <div className="space-y-1.5">
+                  <div
+                    className="h-32 w-full rounded-lg border border-slate-100 bg-slate-100 bg-cover bg-center"
+                    style={{ backgroundImage: `url(${existingBannerUrl})` }}
+                  />
+                  <p className="text-xs text-slate-400">
+                    Current banner. Upload a new image below to replace it.
+                  </p>
+                </div>
+              ) : null}
               <FileDropzone
                 accept="image/png,image/jpeg"
                 hint="JPG, PNG — max 5MB"
@@ -334,6 +355,30 @@ export function PostCampaignForm({
                 Supporting Documents{" "}
                 <span className="font-normal text-slate-400">(Optional)</span>
               </p>
+              {existingDocuments.length > 0 && supportingFiles.length === 0 ? (
+                <div className="space-y-1.5">
+                  <ul className="space-y-1.5">
+                    {existingDocuments.map((url, index) => (
+                      <li
+                        key={url}
+                        className="flex items-center gap-2 rounded-lg border border-slate-100 bg-slate-50 px-3 py-2 text-xs text-slate-600"
+                      >
+                        <a
+                          href={url}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          className="truncate text-[#2B6CB0] hover:underline"
+                        >
+                          Document {index + 1}
+                        </a>
+                      </li>
+                    ))}
+                  </ul>
+                  <p className="text-xs text-slate-400">
+                    Current documents. Uploading new files replaces them.
+                  </p>
+                </div>
+              ) : null}
               <FileDropzone
                 accept="application/pdf,image/png,image/jpeg"
                 hint="Upload PDFs or images · Max 3 files, 10MB each"
@@ -392,7 +437,7 @@ export function PostCampaignForm({
                 className="flex-1 rounded-lg bg-[#1A365D] py-2.5 text-white hover:bg-[#2a4a7f]"
                 disabled={isSubmitting}
               >
-                {isSubmitting ? "Submitting..." : "Submit for Review"}
+                {isSubmitting ? submittingLabel : submitLabel}
               </Button>
             </div>
 

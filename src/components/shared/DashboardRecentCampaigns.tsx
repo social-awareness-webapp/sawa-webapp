@@ -28,6 +28,10 @@ const statusStyles: Record<
     label: "Rejected",
     className: "bg-red-50 text-red-700 ring-red-200",
   },
+  draft: {
+    label: "Draft",
+    className: "bg-slate-100 text-slate-600 ring-slate-200",
+  },
 };
 
 function StatusBadge({ status }: { status: DashboardCampaignStatus }) {
@@ -55,7 +59,7 @@ export function DashboardRecentCampaigns({
           Recent Campaigns
         </h2>
         <Link
-          href="#"
+          href="/dashboard/my-campaigns"
           className="text-sm font-medium text-[#2B6CB0] transition-colors hover:text-[#1A365D]"
         >
           View All →
@@ -89,20 +93,20 @@ export function DashboardRecentCampaigns({
                 </td>
                 <td className="py-4 pr-4">
                   <div className="flex items-center gap-3 text-slate-400">
-                    <button
-                      type="button"
+                    <Link
+                      href={`/campaigns/${campaign.id}`}
                       aria-label={`View ${campaign.title}`}
                       className="transition-colors hover:text-[#2B6CB0]"
                     >
                       <Eye className="size-4" />
-                    </button>
-                    <button
-                      type="button"
+                    </Link>
+                    <Link
+                      href={`/campaigns/${campaign.id}/edit`}
                       aria-label={`Edit ${campaign.title}`}
                       className="transition-colors hover:text-[#2B6CB0]"
                     >
                       <Pencil className="size-4" />
-                    </button>
+                    </Link>
                   </div>
                 </td>
               </tr>

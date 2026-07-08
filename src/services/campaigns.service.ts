@@ -7,7 +7,7 @@ import type {
   PaginatedCampaigns,
 } from "@/types/campaign";
 import type { CreateCampaignInput } from "@/types/campaign";
-import type { DashboardCampaign, OwnerCampaignRow } from "@/types/dashboard";
+import type { OwnerCampaign, OwnerCampaignRow } from "@/types/dashboard";
 
 export async function fetchCampaigns(
   params: FetchCampaignsParams = {}
@@ -71,13 +71,14 @@ export async function fetchCampaigns(
 
 export async function fetchMyCampaigns(
   ownerId: string
-): Promise<DashboardCampaign[]> {
+): Promise<OwnerCampaign[]> {
   const supabase = createClient();
 
   const { data, error } = await supabase
     .from("campaigns")
-    .select("id, title, status, created_at, slug")
+    .select("id, title, status, category, created_at, ends_at, slug")
     .eq("created_by", ownerId)
+    .eq("is_archived", false)
     .order("created_at", { ascending: false });
 
   if (error) {
@@ -111,4 +112,36 @@ export async function createCampaign(
   }
 
   return result as CreateCampaignResult;
+}
+
+export async function updateCampaign(
+  id: string,
+  input: CreateCampaignInput
+): Promise<CreateCampaignResult> {
+  const response = await fetch(`/api/campaigns/${id}`, {
+    method: "PATCH",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify(input),
+  });
+
+  const result = await response.json().catch(() => null);
+
+  if (!response.ok) {
+    throw new Error(
+      result?.error ?? "Something went wrong while updating your campaign."
+    );
+  }
+
+  return result as CreateCampaignResult;
+}
+
+export async function archiveCampaign(id: string): Promise<void> {
+  const response = await fetch(`/api/campaigns/${id}`, {
+    method: "DELETE",
+  });
+
+  if (!response.ok) {
+    const result = await response.json().catch(() => null);
+    throw new Error(result?.error ?? "Failed to delete the campaign.");
+  }
 }

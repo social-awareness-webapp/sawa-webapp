@@ -21,7 +21,7 @@ type SidebarItem = {
 
 const navItems: SidebarItem[] = [
   { label: "Dashboard", href: "/dashboard", icon: LayoutGrid },
-  { label: "My Campaigns", href: "#", icon: Megaphone },
+  { label: "My Campaigns", href: "/dashboard/my-campaigns", icon: Megaphone },
   { label: "Post a Campaign", href: "/campaigns/new", icon: PlusCircle },
   { label: "Profile", href: "#", icon: User },
   { label: "Settings", href: "#", icon: Settings },
@@ -30,13 +30,19 @@ const navItems: SidebarItem[] = [
 export function DashboardSidebar() {
   const pathname = usePathname();
 
+  const activeHref = navItems
+    .map((item) => item.href)
+    .filter(
+      (href) =>
+        href !== "#" && (pathname === href || pathname.startsWith(`${href}/`)),
+    )
+    .sort((a, b) => b.length - a.length)[0];
+
   return (
     <aside className="hidden w-60 shrink-0 border-r border-slate-100 bg-white md:block">
       <nav className="flex flex-col gap-1 p-4">
         {navItems.map((item) => {
-          const isActive =
-            item.href !== "#" &&
-            (pathname === item.href || pathname.startsWith(`${item.href}/`));
+          const isActive = item.href !== "#" && item.href === activeHref;
           const Icon = item.icon;
 
           return (

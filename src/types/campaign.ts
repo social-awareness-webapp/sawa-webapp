@@ -68,6 +68,26 @@ export type CampaignMediaFiles = {
   supportingDocuments: File[];
 };
 
+// Full single-campaign shape used by the detail (view) and edit screens.
+export type CampaignDetail = {
+  id: string;
+  slug: string | null;
+  title: string;
+  description: string;
+  category: CampaignCategory | null;
+  organization: string | null;
+  status: string;
+  progressPercent: number;
+  goal: string | null;
+  targetAudience: string | null;
+  startDate: string | null;
+  endDate: string | null;
+  bannerImageUrl: string | null;
+  supportingDocuments: string[];
+  createdBy: string;
+  isArchived: boolean;
+};
+
 export type PaginatedCampaigns = {
   campaigns: Campaign[];
   page: number;
