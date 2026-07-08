@@ -62,7 +62,7 @@ export function FeaturedCampaigns({
               </Link>
             </div>
             <p className="text-sm text-slate-500">
-              Discover awareness campaigns from across the community.
+              Reviewed and approved by SAWA administrators.
             </p>
           </div>
         </div>

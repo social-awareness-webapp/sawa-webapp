@@ -24,17 +24,20 @@ export default async function HomePage() {
       value: stats.communityMembers.toLocaleString(),
       label: "Community Members",
     },
-    { value: stats.activeCampaigns.toLocaleString(), label: "Active Campaigns" },
+    {
+      value: stats.activeCampaigns.toLocaleString(),
+      label: "Active Campaigns",
+    },
     {
       value: stats.partnerBusinesses.toLocaleString(),
       label: "Partner Businesses",
     },
     // No data source yet for reach; kept as a static placeholder for now.
-    { value: "12,000+", label: "Lives Reached" },
+    // { value: "12,000+", label: "Lives Reached" },
   ];
 
   return (
-    <div className="min-h-screen bg-white">
+    <div className="min-h-screen bg-white flex flex-col justify-between">
       <PublicNavbar />
       <HeroSection />
       <StatsStrip stats={statItems} />

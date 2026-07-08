@@ -44,6 +44,7 @@ export async function fetchCampaigns(
       `,
       { count: "exact" }
     )
+    .eq("status", "approved")
     // Treat null as "not archived" so rows created before the backfill still show.
     .or("is_archived.is.null,is_archived.eq.false")
     .order("created_at", { ascending: false })
