@@ -1,10 +1,12 @@
 import { mapCampaignRow } from "@/lib/campaigns/map-campaign";
+import { mapOwnerCampaignRow } from "@/lib/dashboard/map-owner-campaign";
 import { createClient } from "@/lib/supabase/client";
 import type {
   CampaignRow,
   FetchCampaignsParams,
   PaginatedCampaigns,
 } from "@/types/campaign";
+import type { DashboardCampaign, OwnerCampaignRow } from "@/types/dashboard";
 
 export async function fetchCampaigns(
   params: FetchCampaignsParams = {}
@@ -64,4 +66,24 @@ export async function fetchCampaigns(
     total,
     totalPages: total === 0 ? 0 : Math.ceil(total / pageSize),
   };
+}
+
+export async function fetchMyCampaigns(
+  ownerId: string
+): Promise<DashboardCampaign[]> {
+  const supabase = createClient();
+
+  const { data, error } = await supabase
+    .from("campaigns")
+    .select("id, title, status, created_at, slug")
+    .eq("created_by", ownerId)
+    .order("created_at", { ascending: false });
+
+  if (error) {
+    throw error;
+  }
+
+  const rows = (data ?? []) as OwnerCampaignRow[];
+
+  return rows.map(mapOwnerCampaignRow);
 }

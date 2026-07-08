@@ -1,7 +1,7 @@
 import { createServerClient } from "@supabase/ssr";
 import { NextResponse, type NextRequest } from "next/server";
 
-type AppRole = "user" | "business_owner" | "super_admin";
+import type { AppRole } from "@/types/auth";
 
 const dashboardPrefixes = ["/dashboard"];
 const adminPrefixes = ["/admin"];
