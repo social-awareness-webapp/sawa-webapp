@@ -14,7 +14,14 @@ type CampaignCardProps = {
 export function CampaignCard({ campaign }: CampaignCardProps) {
   return (
     <Card className="overflow-hidden border border-slate-100 py-0 shadow-sm ring-0">
-      <div className="relative h-40 bg-slate-100">
+      <div
+        className="relative h-40 bg-slate-100 bg-cover bg-center"
+        style={
+          campaign.bannerImageUrl
+            ? { backgroundImage: `url(${campaign.bannerImageUrl})` }
+            : undefined
+        }
+      >
         <Badge className="absolute top-3 left-3 border-0 bg-white/90 text-[#2D3748] shadow-sm">
           {campaign.category}
         </Badge>
