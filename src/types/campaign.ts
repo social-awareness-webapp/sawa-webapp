@@ -46,6 +46,21 @@ export type FetchCampaignsParams = {
   category?: CampaignCategory | "All";
 };
 
+export type CampaignStatus = "pending" | "draft";
+
+export type CreateCampaignInput = {
+  title: string;
+  category?: CampaignCategory;
+  description?: string;
+  goal?: string;
+  targetAudience?: string;
+  startDate?: string;
+  endDate?: string;
+  status: CampaignStatus;
+};
+
+export type CampaignDraftInput = Omit<CreateCampaignInput, "status">;
+
 export type PaginatedCampaigns = {
   campaigns: Campaign[];
   page: number;

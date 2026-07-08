@@ -6,6 +6,7 @@ import type {
   FetchCampaignsParams,
   PaginatedCampaigns,
 } from "@/types/campaign";
+import type { CreateCampaignInput } from "@/types/campaign";
 import type { DashboardCampaign, OwnerCampaignRow } from "@/types/dashboard";
 
 export async function fetchCampaigns(
@@ -86,4 +87,28 @@ export async function fetchMyCampaigns(
   const rows = (data ?? []) as OwnerCampaignRow[];
 
   return rows.map(mapOwnerCampaignRow);
+}
+
+export type CreateCampaignResult = {
+  campaign: { id: string; slug: string | null; status: string };
+};
+
+export async function createCampaign(
+  input: CreateCampaignInput
+): Promise<CreateCampaignResult> {
+  const response = await fetch("/campaigns", {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify(input),
+  });
+
+  const result = await response.json().catch(() => null);
+
+  if (!response.ok) {
+    throw new Error(
+      result?.error ?? "Something went wrong while posting your campaign."
+    );
+  }
+
+  return result as CreateCampaignResult;
 }

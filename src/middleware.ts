@@ -5,6 +5,7 @@ import type { AppRole } from "@/types/auth";
 
 const dashboardPrefixes = ["/dashboard"];
 const adminPrefixes = ["/admin"];
+const composeCampaignPrefixes = ["/campaigns/new"];
 const authRoutes = ["/login", "/register"];
 
 function isAppRole(value: unknown): value is AppRole {
@@ -25,6 +26,10 @@ function isDashboardRoute(pathname: string) {
 
 function isAdminRoute(pathname: string) {
   return matchesPrefix(pathname, adminPrefixes);
+}
+
+function isComposeCampaignRoute(pathname: string) {
+  return matchesPrefix(pathname, composeCampaignPrefixes);
 }
 
 function isAuthRoute(pathname: string) {
@@ -78,7 +83,11 @@ export async function middleware(request: NextRequest) {
   const { pathname } = request.nextUrl;
 
   if (!user) {
-    if (isDashboardRoute(pathname) || isAdminRoute(pathname)) {
+    if (
+      isDashboardRoute(pathname) ||
+      isAdminRoute(pathname) ||
+      isComposeCampaignRoute(pathname)
+    ) {
       const redirectUrl = request.nextUrl.clone();
       redirectUrl.pathname = "/login";
       redirectUrl.search = "";
@@ -111,6 +120,13 @@ export async function middleware(request: NextRequest) {
   }
 
   if (isAdminRoute(pathname) && (!role || !canAccessAdmin(role))) {
+    const redirectUrl = request.nextUrl.clone();
+    redirectUrl.pathname = "/unauthorized";
+    redirectUrl.search = "";
+    return NextResponse.redirect(redirectUrl);
+  }
+
+  if (isComposeCampaignRoute(pathname) && !role) {
     const redirectUrl = request.nextUrl.clone();
     redirectUrl.pathname = "/unauthorized";
     redirectUrl.search = "";

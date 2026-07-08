@@ -22,7 +22,7 @@ export function DashboardEmptyCampaigns() {
           </p>
         </div>
         <Link
-          href="#"
+          href="/campaigns/new"
           className={cn(
             buttonVariants({ variant: "default", size: "lg" }),
             "mt-1 gap-2 bg-[#1A365D] px-4 text-white hover:bg-[#2a4a7f]"

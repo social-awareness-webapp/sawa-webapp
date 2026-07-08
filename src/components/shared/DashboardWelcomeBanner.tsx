@@ -44,7 +44,7 @@ export function DashboardWelcomeBanner({
         </div>
       </div>
       <Link
-        href="#"
+        href="/campaigns/new"
         className={cn(
           buttonVariants({ variant: "default", size: "lg" }),
           "gap-2 self-start bg-[#1A365D] px-4 text-white hover:bg-[#2a4a7f] sm:self-auto"

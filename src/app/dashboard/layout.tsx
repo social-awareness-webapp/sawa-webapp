@@ -1,3 +1,5 @@
+import { redirect } from "next/navigation";
+
 import { DashboardHeader } from "@/components/shared/DashboardHeader";
 import { DashboardHelpButton } from "@/components/shared/DashboardHelpButton";
 import { DashboardSidebar } from "@/components/shared/DashboardSidebar";
@@ -10,8 +12,13 @@ export default async function DashboardLayout({
   children: React.ReactNode;
 }>) {
   const profile = await getCurrentUserProfile();
-  const displayName = profile?.fullName ?? "there";
-  const initials = getInitials(profile?.fullName);
+
+  if (!profile) {
+    redirect("/login");
+  }
+
+  const displayName = profile.fullName;
+  const initials = getInitials(profile.fullName);
 
   return (
     <div className="flex min-h-screen flex-col bg-slate-50">

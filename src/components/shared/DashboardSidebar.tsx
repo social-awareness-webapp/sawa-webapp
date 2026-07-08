@@ -19,12 +19,10 @@ type SidebarItem = {
   icon: LucideIcon;
 };
 
-// Only the dashboard route exists today; the remaining destinations are
-// placeholders (`#`) until their pages are built.
 const navItems: SidebarItem[] = [
   { label: "Dashboard", href: "/dashboard", icon: LayoutGrid },
   { label: "My Campaigns", href: "#", icon: Megaphone },
-  { label: "Post a Campaign", href: "#", icon: PlusCircle },
+  { label: "Post a Campaign", href: "/campaigns/new", icon: PlusCircle },
   { label: "Profile", href: "#", icon: User },
   { label: "Settings", href: "#", icon: Settings },
 ];
@@ -50,7 +48,7 @@ export function DashboardSidebar() {
                 "flex items-center gap-3 rounded-lg px-3 py-2.5 text-sm font-medium transition-colors",
                 isActive
                   ? "bg-slate-100 text-[#1A365D]"
-                  : "text-slate-500 hover:bg-slate-50 hover:text-[#1A365D]"
+                  : "text-slate-500 hover:bg-slate-50 hover:text-[#1A365D]",
               )}
             >
               <Icon className="size-4.5" />
