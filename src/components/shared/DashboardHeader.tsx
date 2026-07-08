@@ -1,5 +1,5 @@
 import Link from "next/link";
-import { Bell, Megaphone } from "lucide-react";
+import { Megaphone } from "lucide-react";
 
 import { DashboardMobileNav } from "@/components/shared/DashboardMobileNav";
 import { DashboardUserMenu } from "@/components/shared/DashboardUserMenu";
@@ -9,7 +9,10 @@ type DashboardHeaderProps = {
   initials: string;
 };
 
-export function DashboardHeader({ displayName, initials }: DashboardHeaderProps) {
+export function DashboardHeader({
+  displayName,
+  initials,
+}: DashboardHeaderProps) {
   return (
     <header className="sticky top-0 z-30 border-b border-slate-100 bg-white">
       <div className="flex h-16 items-center justify-between px-4 sm:px-6">
@@ -24,9 +27,7 @@ export function DashboardHeader({ displayName, initials }: DashboardHeaderProps)
           <span
             className="relative grid size-9 place-items-center rounded-full text-slate-400"
             aria-hidden
-          >
-            <Bell className="size-5" />
-          </span>
+          ></span>
           <DashboardUserMenu displayName={displayName} initials={initials} />
         </div>
       </div>

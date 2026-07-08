@@ -4,7 +4,12 @@ import { useState } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
 
 import { LoginForm } from "@/components/shared/LoginForm";
-import { loginUser, signInWithGoogle } from "@/services/auth.service";
+import {
+  loginUser,
+  logoutUser,
+  signInWithGoogle,
+} from "@/services/auth.service";
+import { isCurrentUserArchived } from "@/services/profile.service";
 import type { LoginFormData } from "@/types/auth";
 
 export function LoginContainer() {
@@ -27,6 +32,15 @@ export function LoginContainer() {
 
     if (loginError) {
       setError(loginError.message);
+      setIsLoading(false);
+      return;
+    }
+
+    if (await isCurrentUserArchived()) {
+      await logoutUser();
+      setError(
+        "This account has been deleted and can no longer be accessed."
+      );
       setIsLoading(false);
       return;
     }

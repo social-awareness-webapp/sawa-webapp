@@ -102,9 +102,28 @@ export async function middleware(request: NextRequest) {
 
   const { data: profile } = await supabase
     .from("users")
-    .select("role")
+    .select("role, is_archived")
     .eq("id", user.id)
     .single();
+
+  // Archived (soft-deleted) accounts must not be able to use the app, even with
+  // a still-valid session. Sign them out and bounce to login.
+  if (profile?.is_archived) {
+    await supabase.auth.signOut();
+
+    if (isAuthRoute(pathname)) {
+      return supabaseResponse;
+    }
+
+    const redirectUrl = request.nextUrl.clone();
+    redirectUrl.pathname = "/login";
+    redirectUrl.search = "";
+    const redirectResponse = NextResponse.redirect(redirectUrl);
+    supabaseResponse.cookies.getAll().forEach((cookie) => {
+      redirectResponse.cookies.set(cookie);
+    });
+    return redirectResponse;
+  }
 
   const role = isAppRole(profile?.role) ? profile.role : undefined;
 

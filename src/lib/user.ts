@@ -24,6 +24,18 @@ export function getInitials(fullName: string | null | undefined) {
   return `${words[0][0]}${words[words.length - 1][0]}`.toUpperCase();
 }
 
+export function getRoleLabel(role: string | null | undefined) {
+  if (role === "business_owner") {
+    return "Partner Business";
+  }
+
+  if (role === "super_admin") {
+    return "Administrator";
+  }
+
+  return "Community Member";
+}
+
 export function getGreeting(date: Date = new Date()) {
   const hour = date.getHours();
 
