@@ -3,6 +3,7 @@
 import { useState } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
+import { useQueryClient } from "@tanstack/react-query";
 import { ChevronLeft } from "lucide-react";
 
 import { PostCampaignForm } from "@/components/shared/PostCampaignForm";
@@ -18,6 +19,7 @@ import type {
 export function PostCampaignContainer() {
   const router = useRouter();
   const { user } = useAuth();
+  const queryClient = useQueryClient();
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
@@ -48,6 +50,9 @@ export function PostCampaignContainer() {
         status,
       });
 
+      await queryClient.invalidateQueries({
+        queryKey: ["campaigns", "mine", user.id],
+      });
       router.refresh();
       router.push("/dashboard");
     } catch (submitError) {

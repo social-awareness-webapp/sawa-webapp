@@ -3,6 +3,7 @@
 import { useState } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
+import { useQueryClient } from "@tanstack/react-query";
 import { ChevronLeft } from "lucide-react";
 
 import { PostCampaignForm } from "@/components/shared/PostCampaignForm";
@@ -23,6 +24,7 @@ type EditCampaignContainerProps = {
 export function EditCampaignContainer({ campaign }: EditCampaignContainerProps) {
   const router = useRouter();
   const { user } = useAuth();
+  const queryClient = useQueryClient();
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
@@ -62,6 +64,11 @@ export function EditCampaignContainer({ campaign }: EditCampaignContainerProps) 
         status,
       });
 
+      // Refresh the client cache that powers the My Campaigns list so the
+      // update shows immediately, then refresh server components.
+      await queryClient.invalidateQueries({
+        queryKey: ["campaigns", "mine", user.id],
+      });
       router.refresh();
       router.push("/dashboard/my-campaigns");
     } catch (submitError) {
