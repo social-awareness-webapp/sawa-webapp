@@ -31,7 +31,7 @@ export function LoginContainer() {
       return;
     }
 
-    const redirect = searchParams.get("redirect") || "/";
+    const redirect = searchParams.get("redirect") || "/dashboard";
     router.refresh();
     router.push(redirect);
   };
@@ -40,7 +40,7 @@ export function LoginContainer() {
     setIsGoogleLoading(true);
     setError(null);
 
-    const redirect = searchParams.get("redirect") || "/";
+    const redirect = searchParams.get("redirect") || "/dashboard";
     const redirectTo = `${window.location.origin}/auth/callback?next=${encodeURIComponent(redirect)}`;
     const { error: googleError } = await signInWithGoogle(redirectTo);
 
