@@ -9,6 +9,7 @@ import type {
   AdminCampaignStatus,
   AdminNavCounts,
   AdminOverviewStats,
+  AdminReviewStats,
 } from "@/types/admin";
 import type { AppRole } from "@/types/auth";
 
@@ -179,6 +180,9 @@ function startOfWeek(date: Date) {
 export async function getAdminOverviewStats(): Promise<AdminOverviewStats> {
   const supabase = await createClient();
   const weekStart = startOfWeek(new Date()).toISOString();
+  const thirtyDaysAgo = new Date();
+  thirtyDaysAgo.setHours(0, 0, 0, 0);
+  thirtyDaysAgo.setDate(thirtyDaysAgo.getDate() - 29);
 
   const [
     pendingRes,
@@ -188,6 +192,9 @@ export async function getAdminOverviewStats(): Promise<AdminOverviewStats> {
     usersRes,
     businessRes,
     newUsersRes,
+    draftRes,
+    submissionsRes,
+    progressRes,
   ] = await Promise.all([
     supabase
       .from("campaigns")
@@ -227,7 +234,30 @@ export async function getAdminOverviewStats(): Promise<AdminOverviewStats> {
       .in("role", ["user", "business_owner"])
       .gte("created_at", weekStart)
       .or("is_archived.is.null,is_archived.eq.false"),
+    supabase
+      .from("campaigns")
+      .select("id", { count: "exact", head: true })
+      .eq("status", "draft")
+      .or("is_archived.is.null,is_archived.eq.false"),
+    supabase
+      .from("campaigns")
+      .select("id", { count: "exact", head: true })
+      .gte("created_at", thirtyDaysAgo.toISOString())
+      .or("is_archived.is.null,is_archived.eq.false"),
+    supabase
+      .from("campaigns")
+      .select("progress_percent")
+      .eq("status", "approved")
+      .or("is_archived.is.null,is_archived.eq.false"),
   ]);
+
+  const progressRows = (progressRes.data ?? []) as {
+    progress_percent: number | null;
+  }[];
+  const totalCampaignProgress = progressRows.reduce(
+    (sum, row) => sum + (row.progress_percent ?? 0),
+    0
+  );
 
   return {
     pendingReview: pendingRes.count ?? 0,
@@ -237,7 +267,78 @@ export async function getAdminOverviewStats(): Promise<AdminOverviewStats> {
     totalUsers: usersRes.count ?? 0,
     businessAccounts: businessRes.count ?? 0,
     newUsersThisWeek: newUsersRes.count ?? 0,
+    draftCampaigns: draftRes.count ?? 0,
+    submissionsLast30Days: submissionsRes.count ?? 0,
+    totalCampaignProgress,
   };
+}
+
+export async function getAdminReviewStats(): Promise<AdminReviewStats> {
+  const supabase = await createClient();
+  const today = new Date().toISOString().slice(0, 10);
+
+  const { data, error } = await supabase.from("campaign_approvals").select(`
+      decision,
+      reviewed_at,
+      campaigns (
+        created_at
+      )
+    `);
+
+  if (error) {
+    console.error("[getAdminReviewStats]", error.message);
+    return { approvedToday: 0, rejectedToday: 0, avgReviewDays: null };
+  }
+
+  type ApprovalRow = {
+    decision: string;
+    reviewed_at: string;
+    campaigns:
+      | { created_at: string }
+      | { created_at: string }[]
+      | null;
+  };
+
+  const rows = (data ?? []) as ApprovalRow[];
+  let approvedToday = 0;
+  let rejectedToday = 0;
+  const reviewDurations: number[] = [];
+
+  for (const row of rows) {
+    const reviewedDate = row.reviewed_at?.slice(0, 10);
+
+    if (reviewedDate === today) {
+      if (row.decision === "approved") {
+        approvedToday += 1;
+      }
+
+      if (row.decision === "rejected") {
+        rejectedToday += 1;
+      }
+    }
+
+    const campaign = Array.isArray(row.campaigns)
+      ? row.campaigns[0]
+      : row.campaigns;
+
+    if (campaign?.created_at && row.reviewed_at) {
+      const durationMs =
+        new Date(row.reviewed_at).getTime() -
+        new Date(campaign.created_at).getTime();
+
+      if (durationMs > 0) {
+        reviewDurations.push(durationMs / (1000 * 60 * 60 * 24));
+      }
+    }
+  }
+
+  const avgReviewDays =
+    reviewDurations.length > 0
+      ? reviewDurations.reduce((sum, value) => sum + value, 0) /
+        reviewDurations.length
+      : null;
+
+  return { approvedToday, rejectedToday, avgReviewDays };
 }
 
 export async function getAdminRecentActivity(): Promise<AdminActivityItem[]> {

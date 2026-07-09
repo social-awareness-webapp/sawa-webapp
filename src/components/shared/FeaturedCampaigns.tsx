@@ -4,7 +4,7 @@ import { Megaphone, Plus } from "lucide-react";
 import { CampaignCard } from "@/components/shared/CampaignCard";
 import { CategoryFilterPills } from "@/components/shared/CategoryFilterPills";
 import { buttonVariants } from "@/components/ui/button";
-import type { CampaignFilterCategory } from "@/data/mock-campaigns";
+import type { CampaignFilterCategory } from "@/data/campaign-categories";
 import { cn } from "@/lib/utils";
 import type { Campaign } from "@/types/campaign";
 

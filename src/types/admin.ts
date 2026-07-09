@@ -64,6 +64,15 @@ export type AdminOverviewStats = {
   totalUsers: number;
   businessAccounts: number;
   newUsersThisWeek: number;
+  draftCampaigns: number;
+  submissionsLast30Days: number;
+  totalCampaignProgress: number;
+};
+
+export type AdminReviewStats = {
+  approvedToday: number;
+  rejectedToday: number;
+  avgReviewDays: number | null;
 };
 
 export type AdminActivityItem = {

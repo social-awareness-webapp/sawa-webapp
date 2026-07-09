@@ -3,7 +3,7 @@ import {
   Ban,
   CheckCircle2,
   Clock3,
-  Flag,
+  FileText,
   Megaphone,
   TrendingUp,
   Users,
@@ -115,16 +115,16 @@ export default async function AdminOverviewPage() {
           iconClassName="text-amber-600"
         />
         <AdminStatCard
-          label="Active Reports"
-          value={0}
-          subtext="Requires attention"
-          icon={Flag}
-          iconClassName="text-pink-600"
+          label="Draft Campaigns"
+          value={stats.draftCampaigns}
+          subtext="Saved but not submitted"
+          icon={FileText}
+          iconClassName="text-slate-600"
         />
         <AdminStatCard
-          label="Platform Reach"
-          value={stats.totalActive * 88}
-          subtext="Estimated this month"
+          label="Submissions (30d)"
+          value={stats.submissionsLast30Days}
+          subtext="New campaigns this month"
           icon={TrendingUp}
           iconClassName="text-emerald-600"
         />

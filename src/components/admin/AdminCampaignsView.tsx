@@ -37,11 +37,12 @@ import {
 } from "@/lib/csv/admin-exports";
 import { toast } from "@/lib/toast";
 import { cn } from "@/lib/utils";
-import type { AdminCampaignRow, AdminCampaignStatus } from "@/types/admin";
+import type { AdminCampaignRow, AdminCampaignStatus, AdminReviewStats } from "@/types/admin";
 
 type AdminCampaignsViewProps = {
   campaigns: AdminCampaignRow[];
   mode: "pending" | "all";
+  reviewStats?: AdminReviewStats;
 };
 
 const PAGE_SIZE = 10;
@@ -52,7 +53,11 @@ const ALL_STATUSES: AdminCampaignStatus[] = [
   "rejected",
 ];
 
-export function AdminCampaignsView({ campaigns, mode }: AdminCampaignsViewProps) {
+export function AdminCampaignsView({
+  campaigns,
+  mode,
+  reviewStats,
+}: AdminCampaignsViewProps) {
   const router = useRouter();
   const [search, setSearch] = useState("");
   const [statusFilter, setStatusFilter] = useState<string>(
@@ -65,18 +70,18 @@ export function AdminCampaignsView({ campaigns, mode }: AdminCampaignsViewProps)
   const [error, setError] = useState<string | null>(null);
 
   const stats = useMemo(() => {
-    const today = new Date().toISOString().slice(0, 10);
+    const pending = campaigns.filter((c) => c.status === "pending").length;
 
     return {
-      pending: campaigns.filter((c) => c.status === "pending").length,
-      approvedToday: campaigns.filter(
-        (c) => c.status === "approved" && c.createdAt.slice(0, 10) === today
-      ).length,
-      rejectedToday: campaigns.filter(
-        (c) => c.status === "rejected" && c.createdAt.slice(0, 10) === today
-      ).length,
+      pending,
+      approvedToday: reviewStats?.approvedToday ?? 0,
+      rejectedToday: reviewStats?.rejectedToday ?? 0,
+      avgReviewTime:
+        reviewStats?.avgReviewDays != null
+          ? `${reviewStats.avgReviewDays.toFixed(1)}d`
+          : "—",
     };
-  }, [campaigns]);
+  }, [campaigns, reviewStats]);
 
   const filtered = useMemo(() => {
     const term = search.trim().toLowerCase();
@@ -201,7 +206,7 @@ export function AdminCampaignsView({ campaigns, mode }: AdminCampaignsViewProps)
             value={stats.rejectedToday}
             valueClassName="text-red-600"
           />
-          <AdminStatCard label="Avg Review Time" value="1.8d" />
+          <AdminStatCard label="Avg Review Time" value={stats.avgReviewTime} />
         </div>
       ) : null}
 

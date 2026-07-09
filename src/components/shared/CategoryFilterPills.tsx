@@ -1,6 +1,6 @@
 "use client";
 
-import type { CampaignFilterCategory } from "@/data/mock-campaigns";
+import type { CampaignFilterCategory } from "@/data/campaign-categories";
 
 type CategoryFilterPillsProps = {
   categories: readonly CampaignFilterCategory[];

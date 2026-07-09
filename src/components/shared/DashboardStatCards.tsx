@@ -1,10 +1,4 @@
-import {
-  Clock,
-  Megaphone,
-  TrendingUp,
-  Users,
-  type LucideIcon,
-} from "lucide-react";
+import { CheckCircle2, Clock, Megaphone, TrendingUp, type LucideIcon } from "lucide-react";
 
 import { Card, CardContent } from "@/components/ui/card";
 import type { DashboardMetricKey, DashboardStat } from "@/types/dashboard";
@@ -19,7 +13,7 @@ const metricVisuals: Record<
 > = {
   myCampaigns: { icon: Megaphone, colorClass: "text-[#2B6CB0]" },
   pendingReview: { icon: Clock, colorClass: "text-[#D69E2E]" },
-  totalSupporters: { icon: Users, colorClass: "text-emerald-500" },
+  approvedCampaigns: { icon: CheckCircle2, colorClass: "text-emerald-500" },
   reachThisMonth: { icon: TrendingUp, colorClass: "text-[#D53F8C]" },
 };
 

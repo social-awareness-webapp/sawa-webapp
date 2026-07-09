@@ -91,7 +91,7 @@ export async function getAdminBusinessAccounts(): Promise<
       sponsorshipTier: latestTier.get(owner.id) ?? "standard",
       campaignCount: campaignCounts.get(owner.id) ?? 0,
       joinedAt: owner.created_at.slice(0, 10),
-      isVerified: Boolean(profile?.website || profile?.contact_email),
+      isVerified: Boolean(profile),
     };
   });
 }

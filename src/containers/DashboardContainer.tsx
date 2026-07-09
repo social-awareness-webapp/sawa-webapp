@@ -48,10 +48,18 @@ export function DashboardContainer({
     (campaign) => campaign.status === "pending",
   ).length;
 
+  const monthStart = new Date();
+  monthStart.setDate(1);
+  monthStart.setHours(0, 0, 0, 0);
+  const reachThisMonth = campaigns.filter((campaign) => {
+    const submittedAt = new Date(campaign.submittedDate);
+    return !Number.isNaN(submittedAt.getTime()) && submittedAt >= monthStart;
+  }).length;
+
   const summary: DashboardSummary = {
     activeCount: approvedCount,
     pendingCount,
-    supporterCount: 0,
+    approvedCount,
   };
 
   const stats: DashboardStat[] = [
@@ -65,8 +73,16 @@ export function DashboardContainer({
       label: "Pending Review",
       value: String(pendingCount),
     },
-    { key: "totalSupporters", label: "Total Supporters", value: "0" },
-    { key: "reachThisMonth", label: "Reach This Month", value: "0" },
+    {
+      key: "approvedCampaigns",
+      label: "Approved",
+      value: String(approvedCount),
+    },
+    {
+      key: "reachThisMonth",
+      label: "Submitted This Month",
+      value: String(reachThisMonth),
+    },
   ];
 
   const isBusy = isLoading || !userId;

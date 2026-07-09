@@ -39,7 +39,7 @@ export function DashboardWelcomeBanner({
             {summary.pendingCount} Pending
           </span>
           <span className={cn(pillBaseClass, "bg-slate-200 text-slate-600")}>
-            {summary.supporterCount} Supporters
+            {summary.approvedCount} Approved
           </span>
         </div>
       </div>

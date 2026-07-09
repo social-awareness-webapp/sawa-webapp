@@ -7,7 +7,7 @@ import { FeaturedCampaigns } from "@/components/shared/FeaturedCampaigns";
 import {
   campaignCategories,
   type CampaignFilterCategory,
-} from "@/data/mock-campaigns";
+} from "@/data/campaign-categories";
 import { fetchCampaigns } from "@/services/campaigns.service";
 import { toast } from "@/lib/toast";
 
