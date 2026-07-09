@@ -1,5 +1,6 @@
 "use client";
 
+import { useEffect } from "react";
 import { useQuery } from "@tanstack/react-query";
 
 import { DashboardEmptyCampaigns } from "@/components/shared/DashboardEmptyCampaigns";
@@ -10,6 +11,7 @@ import { Card } from "@/components/ui/card";
 import { toDashboardCampaign } from "@/lib/dashboard/map-owner-campaign";
 import { useAuth } from "@/providers/AuthProvider";
 import { fetchMyCampaigns } from "@/services/campaigns.service";
+import { toast } from "@/lib/toast";
 import type { DashboardStat, DashboardSummary } from "@/types/dashboard";
 
 const RECENT_CAMPAIGNS_LIMIT = 5;
@@ -31,6 +33,12 @@ export function DashboardContainer({
     queryFn: () => fetchMyCampaigns(userId as string),
     enabled: Boolean(userId),
   });
+
+  useEffect(() => {
+    if (isError) {
+      toast.error("We couldn't load your campaigns right now. Please try again.");
+    }
+  }, [isError]);
 
   const campaigns = data ?? [];
   const approvedCount = campaigns.filter(

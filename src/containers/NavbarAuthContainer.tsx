@@ -6,6 +6,7 @@ import { useRouter } from "next/navigation";
 import { PublicNavbarAuthActions } from "@/components/shared/PublicNavbarAuthActions";
 import { useAuth } from "@/providers/AuthProvider";
 import { logoutUser } from "@/services/auth.service";
+import { toast } from "@/lib/toast";
 
 export function NavbarAuthContainer() {
   const router = useRouter();
@@ -18,6 +19,7 @@ export function NavbarAuthContainer() {
     const { error } = await logoutUser();
 
     if (error) {
+      toast.error(error.message);
       setIsLoggingOut(false);
       return;
     }

@@ -11,6 +11,7 @@ import {
   signInWithGoogle,
 } from "@/services/auth.service";
 import { isCurrentUserArchived } from "@/services/profile.service";
+import { toast } from "@/lib/toast";
 import type { LoginFormData } from "@/types/auth";
 
 export function LoginContainer() {
@@ -33,15 +34,17 @@ export function LoginContainer() {
 
     if (loginError) {
       setError(loginError.message);
+      toast.error(loginError.message);
       setIsLoading(false);
       return;
     }
 
     if (await isCurrentUserArchived()) {
       await logoutUser();
-      setError(
-        "This account has been deleted and can no longer be accessed."
-      );
+      const message =
+        "This account has been deleted and can no longer be accessed.";
+      setError(message);
+      toast.error(message);
       setIsLoading(false);
       return;
     }
@@ -65,6 +68,7 @@ export function LoginContainer() {
 
     if (googleError) {
       setError(googleError.message);
+      toast.error(googleError.message);
       setIsGoogleLoading(false);
     }
   };

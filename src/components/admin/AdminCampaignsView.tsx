@@ -32,6 +32,7 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { reviewCampaign } from "@/services/admin.service";
+import { toast } from "@/lib/toast";
 import { cn } from "@/lib/utils";
 import type { AdminCampaignRow, AdminCampaignStatus } from "@/types/admin";
 
@@ -113,6 +114,7 @@ export function AdminCampaignsView({ campaigns, mode }: AdminCampaignsViewProps)
 
   const handleReview = async (
     campaignId: string,
+    campaignTitle: string,
     decision: "approved" | "rejected"
   ) => {
     setReviewingId(campaignId);
@@ -120,13 +122,19 @@ export function AdminCampaignsView({ campaigns, mode }: AdminCampaignsViewProps)
 
     try {
       await reviewCampaign(campaignId, decision);
+      toast.success(
+        decision === "approved"
+          ? `"${campaignTitle}" has been approved.`
+          : `"${campaignTitle}" has been rejected.`
+      );
       router.refresh();
     } catch (reviewError) {
-      setError(
+      const message =
         reviewError instanceof Error
           ? reviewError.message
-          : "Failed to update campaign status."
-      );
+          : "Failed to update campaign status.";
+      setError(message);
+      toast.error(message);
     } finally {
       setReviewingId(null);
     }
@@ -328,7 +336,11 @@ export function AdminCampaignsView({ campaigns, mode }: AdminCampaignsViewProps)
                               type="button"
                               disabled={isReviewing}
                               onClick={() =>
-                                handleReview(campaign.id, "approved")
+                                handleReview(
+                                  campaign.id,
+                                  campaign.title,
+                                  "approved"
+                                )
                               }
                               className="text-emerald-500 transition-colors hover:text-emerald-700 disabled:opacity-50"
                               aria-label={`Approve ${campaign.title}`}
@@ -343,7 +355,11 @@ export function AdminCampaignsView({ campaigns, mode }: AdminCampaignsViewProps)
                               type="button"
                               disabled={isReviewing}
                               onClick={() =>
-                                handleReview(campaign.id, "rejected")
+                                handleReview(
+                                  campaign.id,
+                                  campaign.title,
+                                  "rejected"
+                                )
                               }
                               className="text-red-500 transition-colors hover:text-red-700 disabled:opacity-50"
                               aria-label={`Reject ${campaign.title}`}

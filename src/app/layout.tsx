@@ -3,6 +3,7 @@ import { Inter } from "next/font/google";
 
 import { AuthProvider } from "@/providers/AuthProvider";
 import { QueryProvider } from "@/providers/QueryProvider";
+import { Toaster } from "@/components/ui/sonner";
 import { getCurrentUser } from "@/lib/supabase/server";
 import "./globals.css";
 
@@ -31,6 +32,7 @@ export default async function RootLayout({
       <body className="min-h-full flex flex-col">
         <QueryProvider>
           <AuthProvider initialUser={user}>{children}</AuthProvider>
+          <Toaster />
         </QueryProvider>
       </body>
     </html>

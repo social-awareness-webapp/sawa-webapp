@@ -1,9 +1,10 @@
 "use client";
 
-import { useTransition } from "react";
+import { useEffect, useRef, useTransition } from "react";
 import { useRouter } from "next/navigation";
 import { Loader2, RefreshCw } from "lucide-react";
 
+import { toast } from "@/lib/toast";
 import { cn } from "@/lib/utils";
 
 type AdminRefreshButtonProps = {
@@ -13,6 +14,15 @@ type AdminRefreshButtonProps = {
 export function AdminRefreshButton({ className }: AdminRefreshButtonProps) {
   const router = useRouter();
   const [isPending, startTransition] = useTransition();
+  const wasPendingRef = useRef(false);
+
+  useEffect(() => {
+    if (wasPendingRef.current && !isPending) {
+      toast.success("Dashboard data refreshed.");
+    }
+
+    wasPendingRef.current = isPending;
+  }, [isPending]);
 
   const handleRefresh = () => {
     startTransition(() => {

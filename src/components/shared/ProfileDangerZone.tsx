@@ -6,6 +6,7 @@ import { useRouter } from "next/navigation";
 import { ConfirmDialog } from "@/components/ui/confirm-dialog";
 import { Card } from "@/components/ui/card";
 import { archiveAccount } from "@/services/profile.service";
+import { toast } from "@/lib/toast";
 
 type ProfileDangerZoneProps = {
   userId: string;
@@ -23,14 +24,16 @@ export function ProfileDangerZone({ userId }: ProfileDangerZoneProps) {
 
     try {
       await archiveAccount(userId);
+      toast.success("Your account has been deleted.");
       router.refresh();
       router.push("/");
     } catch (deleteError) {
-      setError(
+      const message =
         deleteError instanceof Error
           ? deleteError.message
-          : "Something went wrong while deleting your account."
-      );
+          : "Something went wrong while deleting your account.";
+      setError(message);
+      toast.error(message);
       setIsDeleting(false);
     }
   };

@@ -7,6 +7,7 @@ import { ChevronDown, LogOut } from "lucide-react";
 import { getInitials } from "@/lib/user";
 import { cn } from "@/lib/utils";
 import { logoutUser } from "@/services/auth.service";
+import { toast } from "@/lib/toast";
 
 type AdminHeaderProps = {
   displayName: string;
@@ -24,6 +25,7 @@ export function AdminHeader({ displayName }: AdminHeaderProps) {
     const { error } = await logoutUser();
 
     if (error) {
+      toast.error(error.message);
       setIsLoggingOut(false);
       return;
     }
