@@ -4,6 +4,7 @@ import { useState } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
 
 import { LoginForm } from "@/components/shared/LoginForm";
+import { getPostLoginRedirect } from "@/lib/auth/get-post-login-redirect";
 import {
   loginUser,
   logoutUser,
@@ -45,16 +46,20 @@ export function LoginContainer() {
       return;
     }
 
-    const redirect = searchParams.get("redirect") || "/dashboard";
-    router.refresh();
+    const redirect =
+      searchParams.get("redirect") ||
+      (await getPostLoginRedirect("/dashboard"));
     router.push(redirect);
+    router.refresh();
   };
 
   const handleGoogleSignIn = async () => {
     setIsGoogleLoading(true);
     setError(null);
 
-    const redirect = searchParams.get("redirect") || "/dashboard";
+    const redirect =
+      searchParams.get("redirect") ||
+      (await getPostLoginRedirect("/dashboard"));
     const redirectTo = `${window.location.origin}/auth/callback?next=${encodeURIComponent(redirect)}`;
     const { error: googleError } = await signInWithGoogle(redirectTo);
 
