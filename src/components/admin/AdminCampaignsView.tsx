@@ -32,6 +32,9 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { reviewCampaign } from "@/services/admin.service";
+import {
+  exportAdminCampaignsCsv,
+} from "@/lib/csv/admin-exports";
 import { toast } from "@/lib/toast";
 import { cn } from "@/lib/utils";
 import type { AdminCampaignRow, AdminCampaignStatus } from "@/types/admin";
@@ -148,6 +151,20 @@ export function AdminCampaignsView({ campaigns, mode }: AdminCampaignsViewProps)
     setPage(1);
   };
 
+  const handleExportCsv = () => {
+    if (filtered.length === 0) {
+      toast.error("No campaigns match your current filters to export.");
+      return;
+    }
+
+    try {
+      const { count, filename } = exportAdminCampaignsCsv(filtered, mode);
+      toast.success(`Exported ${count} campaign${count === 1 ? "" : "s"} to ${filename}.`);
+    } catch {
+      toast.error("Failed to export campaigns. Please try again.");
+    }
+  };
+
   return (
     <div className="space-y-6">
       <div className="flex flex-col gap-4 sm:flex-row sm:items-start sm:justify-between">
@@ -163,6 +180,7 @@ export function AdminCampaignsView({ campaigns, mode }: AdminCampaignsViewProps)
         </div>
         <button
           type="button"
+          onClick={handleExportCsv}
           className="inline-flex items-center gap-2 self-start rounded-lg border border-slate-200 bg-white px-4 py-2 text-sm font-medium text-slate-600 hover:bg-slate-50"
         >
           <Download className="size-4" />

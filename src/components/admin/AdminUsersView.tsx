@@ -23,6 +23,8 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { getInitials } from "@/lib/user";
+import { exportAdminUsersCsv } from "@/lib/csv/admin-exports";
+import { toast } from "@/lib/toast";
 import { cn } from "@/lib/utils";
 import type { AdminUserRow } from "@/types/admin";
 
@@ -71,6 +73,20 @@ export function AdminUsersView({ users }: { users: AdminUserRow[] }) {
   const pageStart = (currentPage - 1) * PAGE_SIZE;
   const paginated = filtered.slice(pageStart, pageStart + PAGE_SIZE);
 
+  const handleExport = () => {
+    if (filtered.length === 0) {
+      toast.error("No users match your current filters to export.");
+      return;
+    }
+
+    try {
+      const { count, filename } = exportAdminUsersCsv(filtered);
+      toast.success(`Exported ${count} user${count === 1 ? "" : "s"} to ${filename}.`);
+    } catch {
+      toast.error("Failed to export users. Please try again.");
+    }
+  };
+
   return (
     <div className="space-y-6">
       <div className="flex flex-col gap-4 sm:flex-row sm:items-start sm:justify-between">
@@ -82,6 +98,7 @@ export function AdminUsersView({ users }: { users: AdminUserRow[] }) {
         </div>
         <button
           type="button"
+          onClick={handleExport}
           className="inline-flex items-center gap-2 self-start rounded-lg border border-slate-200 bg-white px-4 py-2 text-sm font-medium text-slate-600 hover:bg-slate-50"
         >
           <Download className="size-4" />
