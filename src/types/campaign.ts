@@ -1,3 +1,5 @@
+import type { BusinessProfileInput } from "@/types/business-profile";
+
 export type CampaignCategory =
   | "Environment"
   | "Health"
@@ -50,6 +52,8 @@ export type FetchCampaignsParams = {
 
 export type CampaignStatus = "pending" | "draft";
 
+export type SponsorshipTier = "standard" | "featured" | "premium";
+
 export type CreateCampaignInput = {
   title: string;
   category?: CampaignCategory;
@@ -63,11 +67,35 @@ export type CreateCampaignInput = {
   status: CampaignStatus;
 };
 
+export type BusinessCampaignInput = {
+  title: string;
+  category?: CampaignCategory;
+  description?: string;
+  goal?: string;
+  sponsorshipTier?: SponsorshipTier;
+  preferredDuration?: string;
+  startDate?: string;
+  endDate?: string;
+  businessProfile: BusinessProfileInput;
+  confirmBusinessPolicy?: boolean;
+  authorizeBrandDisplay?: boolean;
+  status: CampaignStatus;
+};
+
 export type CampaignDraftInput = Omit<CreateCampaignInput, "status">;
+
+export type BusinessCampaignDraftInput = Omit<
+  BusinessCampaignInput,
+  "status"
+>;
 
 export type CampaignMediaFiles = {
   banner: File | null;
   supportingDocuments: File[];
+};
+
+export type BusinessCampaignMediaFiles = {
+  businessLogo: File | null;
 };
 
 // Full single-campaign shape used by the detail (view) and edit screens.
