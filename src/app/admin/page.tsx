@@ -11,11 +11,17 @@ import {
   Briefcase,
 } from "lucide-react";
 
+import { AdminCategoryChart } from "@/components/admin/AdminCategoryChart";
 import { AdminStatCard } from "@/components/admin/AdminStatCard";
+import { AdminSubmissionsChart } from "@/components/admin/AdminSubmissionsChart";
 import {
   formatRelativeTime,
 } from "@/components/admin/admin-badges";
 import { Card } from "@/components/ui/card";
+import {
+  getAdminCategoryChartData,
+  getAdminSubmissionChartData,
+} from "@/lib/admin/get-admin-chart-data";
 import {
   getAdminOverviewStats,
   getAdminRecentActivity,
@@ -31,11 +37,14 @@ const activityToneStyles = {
 };
 
 export default async function AdminOverviewPage() {
-  const [stats, activity, businessAccounts] = await Promise.all([
-    getAdminOverviewStats(),
-    getAdminRecentActivity(),
-    getAdminBusinessAccounts(),
-  ]);
+  const [stats, activity, businessAccounts, submissionChart, categoryChart] =
+    await Promise.all([
+      getAdminOverviewStats(),
+      getAdminRecentActivity(),
+      getAdminBusinessAccounts(),
+      getAdminSubmissionChartData(),
+      getAdminCategoryChartData(),
+    ]);
 
   const pendingBusinessVerifications = businessAccounts.filter(
     (account) => !account.isVerified
@@ -132,16 +141,16 @@ export default async function AdminOverviewPage() {
           <h2 className="text-base font-semibold text-[#1A365D]">
             Campaign Submissions (Last 30 Days)
           </h2>
-          <div className="mt-6 flex h-56 items-center justify-center rounded-xl border border-dashed border-slate-200 bg-slate-50 text-sm text-slate-400">
-            Bar chart — submissions per day
+          <div className="mt-6">
+            <AdminSubmissionsChart data={submissionChart} />
           </div>
         </Card>
         <Card className="border border-slate-100 bg-white p-6 shadow-sm ring-0">
           <h2 className="text-base font-semibold text-[#1A365D]">
             Campaigns by Category
           </h2>
-          <div className="mt-6 flex h-56 items-center justify-center rounded-xl border border-dashed border-slate-200 bg-slate-50 text-sm text-slate-400">
-            Donut chart — category distribution
+          <div className="mt-6">
+            <AdminCategoryChart data={categoryChart} />
           </div>
         </Card>
       </div>

@@ -58,3 +58,15 @@ export type AdminActivityItem = {
 export type AdminNavCounts = {
   pendingCampaigns: number;
 };
+
+export type AdminDailySubmission = {
+  date: string;
+  label: string;
+  count: number;
+};
+
+export type AdminCategorySlice = {
+  category: string;
+  value: number;
+  fill: string;
+};
