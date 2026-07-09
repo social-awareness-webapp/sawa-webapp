@@ -5,13 +5,13 @@ import {
   Clock3,
   Flag,
   Megaphone,
-  RefreshCw,
   TrendingUp,
   Users,
   Briefcase,
 } from "lucide-react";
 
 import { AdminCategoryChart } from "@/components/admin/AdminCategoryChart";
+import { AdminRefreshButton } from "@/components/admin/AdminRefreshButton";
 import { AdminStatCard } from "@/components/admin/AdminStatCard";
 import { AdminSubmissionsChart } from "@/components/admin/AdminSubmissionsChart";
 import {
@@ -60,13 +60,7 @@ export default async function AdminOverviewPage() {
           </p>
         </div>
         <div className="flex gap-2">
-          <button
-            type="button"
-            className="inline-flex items-center gap-2 rounded-lg border border-slate-200 bg-white px-4 py-2 text-sm font-medium text-slate-600 hover:bg-slate-50"
-          >
-            <RefreshCw className="size-4" />
-            Refresh
-          </button>
+          <AdminRefreshButton />
           <Link
             href="/admin/pending-campaigns"
             className="inline-flex items-center gap-2 rounded-lg bg-[#1A365D] px-4 py-2 text-sm font-medium text-white hover:bg-[#2a4a7f]"
