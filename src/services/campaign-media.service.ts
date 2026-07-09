@@ -4,13 +4,15 @@ const CAMPAIGN_MEDIA_BUCKET = "campaign-media";
 
 type UploadCampaignMediaParams = {
   userId: string;
-  banner: File | null;
-  supportingFiles: File[];
+  banner?: File | null;
+  supportingFiles?: File[];
+  businessLogo?: File | null;
 };
 
 export type UploadCampaignMediaResult = {
   bannerImageUrl?: string;
   supportingDocuments?: string[];
+  businessLogoUrl?: string;
 };
 
 function buildObjectPath(userId: string, folder: string, file: File) {
@@ -24,8 +26,9 @@ function buildObjectPath(userId: string, folder: string, file: File) {
 
 export async function uploadCampaignMedia({
   userId,
-  banner,
-  supportingFiles,
+  banner = null,
+  supportingFiles = [],
+  businessLogo = null,
 }: UploadCampaignMediaParams): Promise<UploadCampaignMediaResult> {
   const supabase = createClient();
 
@@ -55,5 +58,9 @@ export async function uploadCampaignMedia({
         )
       : undefined;
 
-  return { bannerImageUrl, supportingDocuments };
+  const businessLogoUrl = businessLogo
+    ? await uploadFile(businessLogo, "logos")
+    : undefined;
+
+  return { bannerImageUrl, supportingDocuments, businessLogoUrl };
 }

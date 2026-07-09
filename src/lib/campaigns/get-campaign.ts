@@ -1,7 +1,7 @@
 import "server-only";
 
 import { createClient } from "@/lib/supabase/server";
-import type { CampaignCategory, CampaignDetail } from "@/types/campaign";
+import type { CampaignCategory, CampaignDetail, SponsorshipTier } from "@/types/campaign";
 
 const UUID_RE =
   /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i;
@@ -14,11 +14,14 @@ type CampaignDetailRow = {
   title: string;
   description: string | null;
   category: CampaignCategory | null;
+  campaign_type: string | null;
   organization: string | null;
   status: string;
   progress_percent: number | null;
   goal: string | null;
   target_audience: string | null;
+  sponsorship_tier: string | null;
+  preferred_duration: string | null;
   starts_at: string | null;
   ends_at: string | null;
   banner_image_url: string | null;
@@ -34,11 +37,14 @@ const CAMPAIGN_DETAIL_COLUMNS = `
   title,
   description,
   category,
+  campaign_type,
   organization,
   status,
   progress_percent,
   goal,
   target_audience,
+  sponsorship_tier,
+  preferred_duration,
   starts_at,
   ends_at,
   banner_image_url,
@@ -59,6 +65,10 @@ function resolveOrganization(row: CampaignDetailRow) {
   return relation?.full_name ?? null;
 }
 
+function isSponsorshipTier(value: string | null): value is SponsorshipTier {
+  return value === "standard" || value === "featured" || value === "premium";
+}
+
 function toCampaignDetail(row: CampaignDetailRow): CampaignDetail {
   return {
     id: row.id,
@@ -66,11 +76,16 @@ function toCampaignDetail(row: CampaignDetailRow): CampaignDetail {
     title: row.title,
     description: row.description ?? "",
     category: row.category,
+    campaignType: row.campaign_type ?? "social",
     organization: resolveOrganization(row),
     status: row.status,
     progressPercent: row.progress_percent ?? 0,
     goal: row.goal,
     targetAudience: row.target_audience,
+    sponsorshipTier: isSponsorshipTier(row.sponsorship_tier)
+      ? row.sponsorship_tier
+      : null,
+    preferredDuration: row.preferred_duration,
     startDate: row.starts_at ? row.starts_at.slice(0, 10) : null,
     endDate: row.ends_at ? row.ends_at.slice(0, 10) : null,
     bannerImageUrl: row.banner_image_url,
