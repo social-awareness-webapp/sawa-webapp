@@ -48,7 +48,6 @@ import {
   type SponsorshipTier,
 } from "@/lib/campaigns/business-campaign-schema";
 import { cn } from "@/lib/utils";
-import type { BusinessProfile } from "@/types/business-profile";
 import type {
   BusinessCampaignDraftInput,
   BusinessCampaignMediaFiles,
@@ -105,6 +104,8 @@ const formSchema = z
   });
 
 type BusinessFormValues = z.infer<typeof formSchema>;
+
+export type BusinessFormInitialValues = Partial<BusinessFormValues>;
 
 const SPONSORSHIP_OPTIONS: {
   value: SponsorshipTier;
@@ -170,8 +171,11 @@ function toDraftInput(
 }
 
 type BusinessPostCampaignFormProps = {
-  businessProfile: BusinessProfile | null;
   contactEmail: string;
+  initialValues?: BusinessFormInitialValues;
+  existingLogoUrl?: string | null;
+  submitLabel?: string;
+  submittingLabel?: string;
   onSubmit: (
     input: BusinessCampaignDraftInput,
     media: BusinessCampaignMediaFiles,
@@ -187,9 +191,33 @@ type BusinessPostCampaignFormProps = {
   error: string | null;
 };
 
+function buildDefaultValues(
+  initialValues?: BusinessFormInitialValues
+): BusinessFormValues {
+  return {
+    title: initialValues?.title ?? "",
+    category: initialValues?.category ?? "",
+    description: initialValues?.description ?? "",
+    goal: initialValues?.goal ?? "",
+    businessName: initialValues?.businessName ?? "",
+    brandAccentColor: initialValues?.brandAccentColor ?? "",
+    businessWebsite: initialValues?.businessWebsite ?? "",
+    socialMediaHandle: initialValues?.socialMediaHandle ?? "",
+    sponsorshipTier: initialValues?.sponsorshipTier ?? "standard",
+    startDate: initialValues?.startDate ?? "",
+    endDate: initialValues?.endDate ?? "",
+    preferredDuration: initialValues?.preferredDuration ?? "",
+    confirmBusinessPolicy: initialValues?.confirmBusinessPolicy ?? false,
+    authorizeBrandDisplay: initialValues?.authorizeBrandDisplay ?? false,
+  };
+}
+
 export function BusinessPostCampaignForm({
-  businessProfile,
   contactEmail,
+  initialValues,
+  existingLogoUrl = null,
+  submitLabel = "Submit Campaign for Review",
+  submittingLabel = "Submitting...",
   onSubmit,
   onSaveDraft,
   onCancel,
@@ -198,26 +226,10 @@ export function BusinessPostCampaignForm({
 }: BusinessPostCampaignFormProps) {
   const form = useForm<BusinessFormValues>({
     resolver: zodResolver(formSchema),
-    defaultValues: {
-      title: "",
-      category: "",
-      description: "",
-      goal: "",
-      businessName: businessProfile?.businessName ?? "",
-      brandAccentColor: businessProfile?.brandAccentColor || "#2B6CB0",
-      businessWebsite: businessProfile?.website ?? "",
-      socialMediaHandle: businessProfile?.socialMediaHandle ?? "",
-      sponsorshipTier: "standard",
-      startDate: "",
-      endDate: "",
-      preferredDuration: "",
-      confirmBusinessPolicy: false,
-      authorizeBrandDisplay: false,
-    },
+    defaultValues: buildDefaultValues(initialValues),
   });
 
   const [logoFile, setLogoFile] = useState<File[]>([]);
-  const existingLogoUrl = businessProfile?.logoUrl ?? null;
 
   const titleLength = form.watch("title")?.length ?? 0;
   const selectedTier = form.watch("sponsorshipTier");
@@ -722,9 +734,7 @@ export function BusinessPostCampaignForm({
                 className="flex-1 rounded-lg bg-[#1A365D] py-2.5 text-white hover:bg-[#2a4a7f]"
                 disabled={isSubmitting}
               >
-                {isSubmitting
-                  ? "Submitting..."
-                  : "Submit Campaign for Review"}
+                {isSubmitting ? submittingLabel : submitLabel}
               </Button>
             </div>
 
@@ -774,7 +784,27 @@ function FormSection({
   );
 }
 
-export function BusinessCampaignHeader() {
+export function BusinessCampaignHeader({ mode = "create" }: { mode?: "create" | "edit" }) {
+  if (mode === "edit") {
+    return (
+      <div className="mb-6 space-y-3">
+        <span className="inline-flex items-center gap-1.5 rounded-full bg-[#2B6CB0]/10 px-3 py-1 text-xs font-semibold text-[#2B6CB0]">
+          <Briefcase className="size-3.5" />
+          Business Campaign
+        </span>
+        <div className="space-y-1">
+          <h1 className="text-2xl font-bold text-[#1A365D]">
+            Edit Business Campaign
+          </h1>
+          <p className="text-sm text-slate-500">
+            Update your campaign details. Saving will resubmit it for admin
+            review.
+          </p>
+        </div>
+      </div>
+    );
+  }
+
   return (
     <div className="mb-6 space-y-3">
       <span className="inline-flex items-center gap-1.5 rounded-full bg-[#2B6CB0]/10 px-3 py-1 text-xs font-semibold text-[#2B6CB0]">

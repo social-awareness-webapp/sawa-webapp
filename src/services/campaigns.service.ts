@@ -140,6 +140,27 @@ export async function createBusinessCampaign(
   return result as CreateCampaignResult;
 }
 
+export async function updateBusinessCampaign(
+  id: string,
+  input: BusinessCampaignInput
+): Promise<CreateCampaignResult> {
+  const response = await fetch(`/api/campaigns/${id}`, {
+    method: "PATCH",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({ ...input, campaignType: "business" }),
+  });
+
+  const result = await response.json().catch(() => null);
+
+  if (!response.ok) {
+    throw new Error(
+      result?.error ?? "Something went wrong while updating your campaign."
+    );
+  }
+
+  return result as CreateCampaignResult;
+}
+
 export async function updateCampaign(
   id: string,
   input: CreateCampaignInput

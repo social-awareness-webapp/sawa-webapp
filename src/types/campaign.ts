@@ -105,11 +105,14 @@ export type CampaignDetail = {
   title: string;
   description: string;
   category: CampaignCategory | null;
+  campaignType: string;
   organization: string | null;
   status: string;
   progressPercent: number;
   goal: string | null;
   targetAudience: string | null;
+  sponsorshipTier: SponsorshipTier | null;
+  preferredDuration: string | null;
   startDate: string | null;
   endDate: string | null;
   bannerImageUrl: string | null;

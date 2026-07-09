@@ -18,7 +18,6 @@ import {
   createCampaign,
 } from "@/services/campaigns.service";
 import type { AppRole } from "@/types/auth";
-import type { BusinessProfile } from "@/types/business-profile";
 import type {
   BusinessCampaignDraftInput,
   BusinessCampaignMediaFiles,
@@ -29,13 +28,11 @@ import type {
 
 type PostCampaignContainerProps = {
   userRole: AppRole | null;
-  businessProfile: BusinessProfile | null;
   contactEmail: string;
 };
 
 export function PostCampaignContainer({
   userRole,
-  businessProfile,
   contactEmail,
 }: PostCampaignContainerProps) {
   const router = useRouter();
@@ -152,7 +149,6 @@ export function PostCampaignContainer({
         <>
           <BusinessCampaignHeader />
           <BusinessPostCampaignForm
-            businessProfile={businessProfile}
             contactEmail={contactEmail}
             onSubmit={(input, media) => submitBusiness(input, media, "pending")}
             onSaveDraft={(input, media) => submitBusiness(input, media, "draft")}
