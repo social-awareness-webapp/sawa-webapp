@@ -1,6 +1,7 @@
 "use client";
 
 import { useMemo, useState } from "react";
+import Link from "next/link";
 import {
   ChevronLeft,
   ChevronRight,
@@ -203,9 +204,13 @@ export function AdminBusinessAccountsView({
                   </td>
                   <td className="py-4 pr-4">
                     <div className="flex items-center gap-2 text-slate-400">
-                      <button type="button" aria-label={`View ${account.businessName}`}>
+                      <Link
+                        href={`/admin/users/${account.userId}?from=business-accounts`}
+                        className="transition-colors hover:text-[#2B6CB0]"
+                        aria-label={`View ${account.businessName}`}
+                      >
                         <Eye className="size-4" />
-                      </button>
+                      </Link>
                       {!account.isVerified ? (
                         <button
                           type="button"

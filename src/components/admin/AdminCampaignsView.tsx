@@ -342,7 +342,9 @@ export function AdminCampaignsView({ campaigns, mode }: AdminCampaignsViewProps)
                     <td className="py-4 pr-4">
                       <div className="flex items-center gap-2 text-slate-400">
                         <Link
-                          href={`/campaigns/${campaign.id}`}
+                          href={`/admin/campaigns/${campaign.id}?from=${
+                            mode === "pending" ? "pending-campaigns" : "campaigns"
+                          }`}
                           className="transition-colors hover:text-[#2B6CB0]"
                           aria-label={`View ${campaign.title}`}
                         >

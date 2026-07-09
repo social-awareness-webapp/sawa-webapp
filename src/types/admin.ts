@@ -1,4 +1,6 @@
 import type { AppRole } from "@/types/auth";
+import type { BusinessProfile } from "@/types/business-profile";
+import type { ProfileActivity } from "@/types/profile";
 
 export type AdminCampaignStatus = "pending" | "approved" | "rejected" | "draft";
 
@@ -24,6 +26,22 @@ export type AdminUserRow = {
   campaignCount: number;
   joinedAt: string;
   isArchived: boolean;
+};
+
+export type AdminUserDetail = {
+  id: string;
+  email: string;
+  firstName: string;
+  lastName: string;
+  fullName: string;
+  phone: string;
+  location: string;
+  bio: string;
+  role: AppRole;
+  isArchived: boolean;
+  joinedAt: string;
+  activity: ProfileActivity;
+  businessProfile: BusinessProfile | null;
 };
 
 export type AdminBusinessAccountRow = {
