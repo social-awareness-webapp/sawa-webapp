@@ -143,9 +143,13 @@ After changing these, trigger a **fresh rebuild**, not a cache-only redeploy. Pr
 
 ## 4. Screenshots
 
-Capture on desktop (~1280–1440px wide). Save files under [`docs/screenshots/`](./screenshots/) using the exact filenames below, then confirm images render in GitHub / your wiki.
+All screenshots for this document are published in Confluence (source of truth):
 
-> Until PNGs are added, image links below will show as broken — that is expected. See [screenshots/README.md](./screenshots/README.md) for the capture checklist.
+**[Social Awareness Web App — Final Product Document](https://fakharolakh4u.atlassian.net/wiki/spaces/SAWA/pages/25231361/Social+Awareness+Web+App+Final+Product+Document)**
+
+See also [`screenshots/README.md`](./screenshots/README.md) for the filename checklist. Optional local PNG copies may be stored under [`docs/screenshots/`](./screenshots/) for GitHub markdown rendering.
+
+> Capture guidance: desktop ~1280–1440px wide. Use role-specific test accounts. Blur secrets in cloud console shots.
 
 ### 4.1 Public
 
@@ -157,15 +161,13 @@ Capture on desktop (~1280–1440px wide). Save files under [`docs/screenshots/`]
 | S4 | `04-login.png` | Welcome Back / email & password |
 | S5 | `05-register-role.png` | “How will you use SAWA?” role step |
 
+<!-- Local images optional — preferred view is the Confluence page linked above.
 ![S1 Homepage](./screenshots/01-homepage.png)
-
 ![S2 Featured campaigns](./screenshots/02-featured-campaigns.png)
-
 ![S3 Campaign detail](./screenshots/03-campaign-detail.png)
-
 ![S4 Login](./screenshots/04-login.png)
-
 ![S5 Register roles](./screenshots/05-register-role.png)
+-->
 
 ### 4.2 Community member
 
@@ -175,22 +177,12 @@ Capture on desktop (~1280–1440px wide). Save files under [`docs/screenshots/`]
 | S7 | `07-post-campaign.png` | “Post a New Campaign” form |
 | S8 | `08-my-campaigns.png` | My Campaigns list with statuses |
 
-![S6 Dashboard](./screenshots/06-dashboard.png)
-
-![S7 Post campaign](./screenshots/07-post-campaign.png)
-
-![S8 My campaigns](./screenshots/08-my-campaigns.png)
-
 ### 4.3 Business owner
 
 | ID | Filename | Capture |
 |----|----------|---------|
 | S9 | `09-business-campaign.png` | “Launch a Business Awareness Campaign” + Business Campaign badge |
 | S10 | `10-sponsorship-tiers.png` | Sponsorship tiers (Standard / Featured / Premium) |
-
-![S9 Business campaign](./screenshots/09-business-campaign.png)
-
-![S10 Sponsorship tiers](./screenshots/10-sponsorship-tiers.png)
 
 ### 4.4 Super admin
 
@@ -202,16 +194,6 @@ Capture on desktop (~1280–1440px wide). Save files under [`docs/screenshots/`]
 | S14 | `14-user-management.png` | User Management |
 | S15 | `15-business-accounts.png` | Business Accounts |
 
-![S11 Admin overview](./screenshots/11-admin-overview.png)
-
-![S12 Pending campaigns](./screenshots/12-pending-campaigns.png)
-
-![S13 Review](./screenshots/13-admin-review.png)
-
-![S14 Users](./screenshots/14-user-management.png)
-
-![S15 Business accounts](./screenshots/15-business-accounts.png)
-
 ### 4.5 Cloud consoles (recommended for SAWA-60)
 
 | ID | Filename | Capture |
@@ -220,14 +202,6 @@ Capture on desktop (~1280–1440px wide). Save files under [`docs/screenshots/`]
 | C2 | `cloud-vercel-env.png` | Environment Variables list (blur values) |
 | C3 | `cloud-github-actions.png` | Actions → Deploy Production success |
 | C4 | `cloud-supabase-overview.png` | Supabase project home (blur sensitive IDs if needed) |
-
-![C1 Vercel deployments](./screenshots/cloud-vercel-project.png)
-
-![C2 Vercel env](./screenshots/cloud-vercel-env.png)
-
-![C3 GitHub Actions](./screenshots/cloud-github-actions.png)
-
-![C4 Supabase](./screenshots/cloud-supabase-overview.png)
 
 ---
 
@@ -261,4 +235,4 @@ Capture on desktop (~1280–1440px wide). Save files under [`docs/screenshots/`]
 | Audience | Stakeholders, demos, new engineers |
 | Maintainer | SAWA engineering |
 
-*Replace screenshot placeholders after capturing the PNGs listed in §4.*
+*Screenshots live in the Confluence Final Product Document linked in §4.*
