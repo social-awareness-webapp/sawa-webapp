@@ -13,6 +13,7 @@ jobs:
   deploy:
     name: Deploy to Vercel (Production)
     runs-on: ubuntu-latest
+    timeout-minutes: 15
     env:
       VERCEL_TOKEN: ${{ secrets.VERCEL_TOKEN }}
       VERCEL_ORG_ID: ${{ secrets.VERCEL_ORG_ID }}
@@ -40,14 +41,25 @@ jobs:
           node-version: 24
           cache: npm
 
+      - name: Install dependencies
+        run: npm ci
+
       - name: Install Vercel CLI
-        run: npm install --global vercel@latest
+        run: npm install --global vercel@56.2.0
 
       - name: Pull Vercel Environment Information
         run: vercel pull --yes --environment=production --token="$VERCEL_TOKEN"
 
       - name: Build Project Artifacts
-        run: vercel build --prod --token="$VERCEL_TOKEN"
+        run: |
+          vercel build --prod --token="$VERCEL_TOKEN"
+          test -d .vercel/output || {
+            echo "::error::Missing .vercel/output after vercel build"
+            exit 1
+          }
 
       - name: Deploy Project Artifacts to Vercel
-        run: vercel deploy --prebuilt --prod --token="$VERCEL_TOKEN"
+        # Cap wait time — a healthy prebuilt deploy normally finishes in under a minute.
+        # Without this, the CLI can hang forever on "Building…" when a concurrent
+        # Git-triggered Vercel build is also running for the same commit.
+        run: timeout 5m vercel deploy --prebuilt --prod --yes --token="$VERCEL_TOKEN"

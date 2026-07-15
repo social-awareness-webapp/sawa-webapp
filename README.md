@@ -45,4 +45,6 @@ Production deploys run through GitHub Actions when code is pushed to `main` (inc
    - `VERCEL_ORG_ID` — from the Vercel project (or `.vercel/project.json` `orgId` after `vercel link`)
    - `VERCEL_PROJECT_ID` — from the Vercel project (or `.vercel/project.json` `projectId`)
 
-After that, every merge to `main` triggers a production deployment. Non-`main` branches can still use Vercel Preview deployments if Git integration is enabled on the project.
+After that, every merge to `main` triggers a production deployment via GitHub Actions.
+
+[`vercel.json`](vercel.json) skips Vercel’s own Git builds on `main` so they do not race the Actions deploy (that race is what stalls the CLI on `Building…`). Preview deploys for other branches still run through Vercel Git.
