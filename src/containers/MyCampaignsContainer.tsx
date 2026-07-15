@@ -1,12 +1,13 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 
 import { MyCampaignsView } from "@/components/shared/MyCampaignsView";
 import { ConfirmDialog } from "@/components/ui/confirm-dialog";
 import { useAuth } from "@/providers/AuthProvider";
 import { archiveCampaign, fetchMyCampaigns } from "@/services/campaigns.service";
+import { toast } from "@/lib/toast";
 import type { OwnerCampaign } from "@/types/dashboard";
 
 export function MyCampaignsContainer() {
@@ -25,11 +26,25 @@ export function MyCampaignsContainer() {
     enabled: Boolean(userId),
   });
 
+  useEffect(() => {
+    if (isError) {
+      toast.error("We couldn't load your campaigns right now. Please try again.");
+    }
+  }, [isError]);
+
   const deleteMutation = useMutation({
     mutationFn: (id: string) => archiveCampaign(id),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey });
       setPendingCampaign(null);
+      toast.success("Campaign deleted successfully.");
+    },
+    onError: (error) => {
+      toast.error(
+        error instanceof Error
+          ? error.message
+          : "Failed to delete the campaign."
+      );
     },
   });
 

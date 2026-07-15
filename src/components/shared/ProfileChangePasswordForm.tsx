@@ -7,6 +7,7 @@ import { Card } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { changePassword } from "@/services/profile.service";
+import { toast } from "@/lib/toast";
 
 type ProfileChangePasswordFormProps = {
   email: string;
@@ -22,27 +23,29 @@ export function ProfileChangePasswordForm({
   const [confirmPassword, setConfirmPassword] = useState("");
   const [isSaving, setIsSaving] = useState(false);
   const [error, setError] = useState<string | null>(null);
-  const [success, setSuccess] = useState(false);
 
   const handleSubmit = async (event: FormEvent<HTMLFormElement>) => {
     event.preventDefault();
     setError(null);
-    setSuccess(false);
 
     if (!currentPassword) {
-      setError("Please enter your current password.");
+      const message = "Please enter your current password.";
+      setError(message);
+      toast.error(message);
       return;
     }
 
     if (newPassword.length < MIN_PASSWORD_LENGTH) {
-      setError(
-        `Your new password must be at least ${MIN_PASSWORD_LENGTH} characters long.`
-      );
+      const message = `Your new password must be at least ${MIN_PASSWORD_LENGTH} characters long.`;
+      setError(message);
+      toast.error(message);
       return;
     }
 
     if (newPassword !== confirmPassword) {
-      setError("Your new passwords do not match.");
+      const message = "Your new passwords do not match.";
+      setError(message);
+      toast.error(message);
       return;
     }
 
@@ -50,16 +53,17 @@ export function ProfileChangePasswordForm({
 
     try {
       await changePassword({ email, currentPassword, newPassword });
-      setSuccess(true);
+      toast.success("Your password has been updated.");
       setCurrentPassword("");
       setNewPassword("");
       setConfirmPassword("");
     } catch (submitError) {
-      setError(
+      const message =
         submitError instanceof Error
           ? submitError.message
-          : "Something went wrong while updating your password."
-      );
+          : "Something went wrong while updating your password.";
+      setError(message);
+      toast.error(message);
     } finally {
       setIsSaving(false);
     }
@@ -109,11 +113,6 @@ export function ProfileChangePasswordForm({
         </div>
 
         {error ? <p className="text-sm text-red-600">{error}</p> : null}
-        {success ? (
-          <p className="text-sm text-emerald-600">
-            Your password has been updated.
-          </p>
-        ) : null}
 
         <button
           type="submit"

@@ -1,5 +1,6 @@
 "use client";
 
+import { useEffect } from "react";
 import { useQuery } from "@tanstack/react-query";
 
 import { DashboardEmptyCampaigns } from "@/components/shared/DashboardEmptyCampaigns";
@@ -10,6 +11,7 @@ import { Card } from "@/components/ui/card";
 import { toDashboardCampaign } from "@/lib/dashboard/map-owner-campaign";
 import { useAuth } from "@/providers/AuthProvider";
 import { fetchMyCampaigns } from "@/services/campaigns.service";
+import { toast } from "@/lib/toast";
 import type { DashboardStat, DashboardSummary } from "@/types/dashboard";
 
 const RECENT_CAMPAIGNS_LIMIT = 5;
@@ -32,6 +34,12 @@ export function DashboardContainer({
     enabled: Boolean(userId),
   });
 
+  useEffect(() => {
+    if (isError) {
+      toast.error("We couldn't load your campaigns right now. Please try again.");
+    }
+  }, [isError]);
+
   const campaigns = data ?? [];
   const approvedCount = campaigns.filter(
     (campaign) => campaign.status === "approved",
@@ -40,10 +48,18 @@ export function DashboardContainer({
     (campaign) => campaign.status === "pending",
   ).length;
 
+  const monthStart = new Date();
+  monthStart.setDate(1);
+  monthStart.setHours(0, 0, 0, 0);
+  const reachThisMonth = campaigns.filter((campaign) => {
+    const submittedAt = new Date(campaign.submittedDate);
+    return !Number.isNaN(submittedAt.getTime()) && submittedAt >= monthStart;
+  }).length;
+
   const summary: DashboardSummary = {
     activeCount: approvedCount,
     pendingCount,
-    supporterCount: 0,
+    approvedCount,
   };
 
   const stats: DashboardStat[] = [
@@ -57,8 +73,16 @@ export function DashboardContainer({
       label: "Pending Review",
       value: String(pendingCount),
     },
-    { key: "totalSupporters", label: "Total Supporters", value: "0" },
-    { key: "reachThisMonth", label: "Reach This Month", value: "0" },
+    {
+      key: "approvedCampaigns",
+      label: "Approved",
+      value: String(approvedCount),
+    },
+    {
+      key: "reachThisMonth",
+      label: "Submitted This Month",
+      value: String(reachThisMonth),
+    },
   ];
 
   const isBusy = isLoading || !userId;

@@ -4,6 +4,7 @@ import { useState } from "react";
 
 import { RegisterWizard } from "@/components/shared/RegisterWizard";
 import { registerUser, resendVerificationEmail } from "@/services/auth.service";
+import { toast } from "@/lib/toast";
 import type {
   RegisterConfirmationData,
   RegisterDetailsFormData,
@@ -38,6 +39,7 @@ export function RegisterContainer() {
 
     if (registerError) {
       setError(registerError.message);
+      toast.error(registerError.message);
       setIsLoading(false);
       return;
     }
@@ -47,6 +49,7 @@ export function RegisterContainer() {
       email: data.email,
     });
     setStep(3);
+    toast.success("Account created. Please verify your email to continue.");
     setIsLoading(false);
   };
 
@@ -64,11 +67,13 @@ export function RegisterContainer() {
 
     if (resendError) {
       setResendMessage(resendError.message);
+      toast.error(resendError.message);
       setIsResending(false);
       return;
     }
 
     setResendMessage("Verification email sent. Please check your inbox.");
+    toast.success("Verification email sent. Please check your inbox.");
     setIsResending(false);
   };
 

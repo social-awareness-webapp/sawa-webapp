@@ -9,6 +9,7 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import { updateProfile } from "@/services/profile.service";
+import { toast } from "@/lib/toast";
 import type { ProfileDetail } from "@/types/profile";
 
 type ProfilePersonalInfoFormProps = {
@@ -28,15 +29,15 @@ export function ProfilePersonalInfoForm({
   const [bio, setBio] = useState(profile.bio);
   const [isSaving, setIsSaving] = useState(false);
   const [error, setError] = useState<string | null>(null);
-  const [success, setSuccess] = useState(false);
 
   const handleSubmit = async (event: FormEvent<HTMLFormElement>) => {
     event.preventDefault();
     setError(null);
-    setSuccess(false);
 
     if (!firstName.trim()) {
-      setError("First name is required.");
+      const message = "First name is required.";
+      setError(message);
+      toast.error(message);
       return;
     }
 
@@ -50,14 +51,15 @@ export function ProfilePersonalInfoForm({
         location,
         bio,
       });
-      setSuccess(true);
+      toast.success("Your profile has been updated.");
       router.refresh();
     } catch (submitError) {
-      setError(
+      const message =
         submitError instanceof Error
           ? submitError.message
-          : "Something went wrong while saving your profile."
-      );
+          : "Something went wrong while saving your profile.";
+      setError(message);
+      toast.error(message);
     } finally {
       setIsSaving(false);
     }
@@ -150,11 +152,6 @@ export function ProfilePersonalInfoForm({
         </div>
 
         {error ? <p className="text-sm text-red-600">{error}</p> : null}
-        {success ? (
-          <p className="text-sm text-emerald-600">
-            Your profile has been updated.
-          </p>
-        ) : null}
 
         <button
           type="submit"

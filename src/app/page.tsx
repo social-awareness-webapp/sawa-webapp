@@ -32,8 +32,6 @@ export default async function HomePage() {
       value: stats.partnerBusinesses.toLocaleString(),
       label: "Partner Businesses",
     },
-    // No data source yet for reach; kept as a static placeholder for now.
-    // { value: "12,000+", label: "Lives Reached" },
   ];
 
   return (

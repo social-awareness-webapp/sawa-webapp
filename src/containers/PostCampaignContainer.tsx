@@ -17,6 +17,7 @@ import {
   createBusinessCampaign,
   createCampaign,
 } from "@/services/campaigns.service";
+import { toast } from "@/lib/toast";
 import type { AppRole } from "@/types/auth";
 import type {
   BusinessCampaignDraftInput,
@@ -49,7 +50,9 @@ export function PostCampaignContainer({
     status: CampaignStatus
   ) => {
     if (!user) {
-      setError("You must be signed in to post a campaign.");
+      const message = "You must be signed in to post a campaign.";
+      setError(message);
+      toast.error(message);
       return;
     }
 
@@ -73,14 +76,20 @@ export function PostCampaignContainer({
       await queryClient.invalidateQueries({
         queryKey: ["campaigns", "mine", user.id],
       });
+      toast.success(
+        status === "draft"
+          ? "Campaign saved as draft."
+          : "Campaign submitted for review."
+      );
       router.refresh();
       router.push("/dashboard");
     } catch (submitError) {
-      setError(
+      const message =
         submitError instanceof Error
           ? submitError.message
-          : "Something went wrong while posting your campaign."
-      );
+          : "Something went wrong while posting your campaign.";
+      setError(message);
+      toast.error(message);
       setIsSubmitting(false);
     }
   };
@@ -91,7 +100,9 @@ export function PostCampaignContainer({
     status: CampaignStatus
   ) => {
     if (!user) {
-      setError("You must be signed in to post a campaign.");
+      const message = "You must be signed in to post a campaign.";
+      setError(message);
+      toast.error(message);
       return;
     }
 
@@ -117,14 +128,20 @@ export function PostCampaignContainer({
       await queryClient.invalidateQueries({
         queryKey: ["campaigns", "mine", user.id],
       });
+      toast.success(
+        status === "draft"
+          ? "Campaign saved as draft."
+          : "Campaign submitted for review."
+      );
       router.refresh();
       router.push("/dashboard");
     } catch (submitError) {
-      setError(
+      const message =
         submitError instanceof Error
           ? submitError.message
-          : "Something went wrong while posting your campaign."
-      );
+          : "Something went wrong while posting your campaign.";
+      setError(message);
+      toast.error(message);
       setIsSubmitting(false);
     }
   };

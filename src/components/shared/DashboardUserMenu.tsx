@@ -5,6 +5,7 @@ import { useRouter } from "next/navigation";
 import { ChevronDown, LogOut } from "lucide-react";
 
 import { logoutUser } from "@/services/auth.service";
+import { toast } from "@/lib/toast";
 import { cn } from "@/lib/utils";
 
 type DashboardUserMenuProps = {
@@ -26,6 +27,7 @@ export function DashboardUserMenu({
     const { error } = await logoutUser();
 
     if (error) {
+      toast.error(error.message);
       setIsLoggingOut(false);
       return;
     }
