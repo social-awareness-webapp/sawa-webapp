@@ -7,8 +7,9 @@ import { FeaturedCampaigns } from "@/components/shared/FeaturedCampaigns";
 import {
   campaignCategories,
   type CampaignFilterCategory,
-} from "@/data/mock-campaigns";
+} from "@/data/campaign-categories";
 import { fetchCampaigns } from "@/services/campaigns.service";
+import { toast } from "@/lib/toast";
 
 const HOMEPAGE_PAGE_SIZE = 6;
 
@@ -30,6 +31,12 @@ export function FeaturedCampaignsContainer() {
         category: activeCategory,
       }),
   });
+
+  useEffect(() => {
+    if (isError) {
+      toast.error("We couldn't load campaigns right now. Please try again.");
+    }
+  }, [isError]);
 
   return (
     <FeaturedCampaigns

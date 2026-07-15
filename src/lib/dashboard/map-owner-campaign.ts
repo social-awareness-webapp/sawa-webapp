@@ -29,7 +29,6 @@ export function mapOwnerCampaignRow(row: OwnerCampaignRow): OwnerCampaign {
     status: toDashboardStatus(row.status),
     submittedDate: row.created_at ? row.created_at.slice(0, 10) : "",
     endDate: row.ends_at ? row.ends_at.slice(0, 10) : null,
-    // No supporters/analytics data source exists yet.
     supporters: null,
     slug: row.slug,
   };

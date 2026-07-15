@@ -17,6 +17,7 @@ import {
   updateBusinessCampaign,
   updateCampaign,
 } from "@/services/campaigns.service";
+import { toast } from "@/lib/toast";
 import type { BusinessProfile } from "@/types/business-profile";
 import type {
   BusinessCampaignDraftInput,
@@ -52,7 +53,9 @@ export function EditCampaignContainer({
     status: CampaignStatus
   ) => {
     if (!user) {
-      setError("You must be signed in to edit a campaign.");
+      const message = "You must be signed in to edit a campaign.";
+      setError(message);
+      toast.error(message);
       return;
     }
 
@@ -84,14 +87,20 @@ export function EditCampaignContainer({
       await queryClient.invalidateQueries({
         queryKey: ["campaigns", "mine", user.id],
       });
+      toast.success(
+        status === "draft"
+          ? "Draft saved successfully."
+          : "Campaign updated and resubmitted for review."
+      );
       router.refresh();
       router.push("/dashboard/my-campaigns");
     } catch (submitError) {
-      setError(
+      const message =
         submitError instanceof Error
           ? submitError.message
-          : "Something went wrong while updating your campaign."
-      );
+          : "Something went wrong while updating your campaign.";
+      setError(message);
+      toast.error(message);
       setIsSubmitting(false);
     }
   };
@@ -102,7 +111,9 @@ export function EditCampaignContainer({
     status: CampaignStatus
   ) => {
     if (!user) {
-      setError("You must be signed in to edit a campaign.");
+      const message = "You must be signed in to edit a campaign.";
+      setError(message);
+      toast.error(message);
       return;
     }
 
@@ -131,14 +142,20 @@ export function EditCampaignContainer({
       await queryClient.invalidateQueries({
         queryKey: ["campaigns", "mine", user.id],
       });
+      toast.success(
+        status === "draft"
+          ? "Draft saved successfully."
+          : "Campaign updated and resubmitted for review."
+      );
       router.refresh();
       router.push("/dashboard/my-campaigns");
     } catch (submitError) {
-      setError(
+      const message =
         submitError instanceof Error
           ? submitError.message
-          : "Something went wrong while updating your campaign."
-      );
+          : "Something went wrong while updating your campaign.";
+      setError(message);
+      toast.error(message);
       setIsSubmitting(false);
     }
   };

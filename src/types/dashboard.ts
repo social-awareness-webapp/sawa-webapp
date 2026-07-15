@@ -1,7 +1,7 @@
 export type DashboardMetricKey =
   | "myCampaigns"
   | "pendingReview"
-  | "totalSupporters"
+  | "approvedCampaigns"
   | "reachThisMonth";
 
 export type DashboardStat = {
@@ -26,7 +26,7 @@ export type DashboardCampaign = {
 export type DashboardSummary = {
   activeCount: number;
   pendingCount: number;
-  supporterCount: number;
+  approvedCount: number;
 };
 
 export type OwnerCampaignRow = {

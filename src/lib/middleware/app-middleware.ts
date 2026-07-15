@@ -51,7 +51,7 @@ function getAuthenticatedHome(role: AppRole) {
   return role === "super_admin" ? "/admin" : "/dashboard";
 }
 
-export async function middleware(request: NextRequest) {
+export async function handleAppMiddleware(request: NextRequest) {
   let supabaseResponse = NextResponse.next({
     request,
   });
@@ -106,8 +106,6 @@ export async function middleware(request: NextRequest) {
     .eq("id", user.id)
     .single();
 
-  // Archived (soft-deleted) accounts must not be able to use the app, even with
-  // a still-valid session. Sign them out and bounce to login.
   if (profile?.is_archived) {
     await supabase.auth.signOut();
 
@@ -130,6 +128,13 @@ export async function middleware(request: NextRequest) {
   if (isAuthRoute(pathname)) {
     const redirectUrl = request.nextUrl.clone();
     redirectUrl.pathname = role ? getAuthenticatedHome(role) : "/dashboard";
+    redirectUrl.search = "";
+    return NextResponse.redirect(redirectUrl);
+  }
+
+  if (isDashboardRoute(pathname) && role === "super_admin") {
+    const redirectUrl = request.nextUrl.clone();
+    redirectUrl.pathname = "/admin";
     redirectUrl.search = "";
     return NextResponse.redirect(redirectUrl);
   }
@@ -157,9 +162,3 @@ export async function middleware(request: NextRequest) {
 
   return supabaseResponse;
 }
-
-export const config = {
-  matcher: [
-    "/((?!_next/static|_next/image|favicon.ico|.*\\.(?:svg|png|jpg|jpeg|gif|webp)$).*)",
-  ],
-};
