@@ -31,6 +31,18 @@ You can check out [the Next.js GitHub repository](https://github.com/vercel/next
 
 ## Deploy on Vercel
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+Production deploys run through GitHub Actions when code is pushed to `main` (including when a PR is merged). The workflow is [`.github/workflows/deploy-production.yml`](.github/workflows/deploy-production.yml).
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+### One-time setup
+
+1. Import this repository in the [Vercel dashboard](https://vercel.com/new) (or link an existing Vercel project).
+2. In the Vercel project, set these **Production** environment variables (see [`.env.example`](.env.example)):
+   - `NEXT_PUBLIC_SUPABASE_URL`
+   - `NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY`
+3. Create a Vercel token at [Account Tokens](https://vercel.com/account/tokens).
+4. In the GitHub repo, add these Actions secrets:
+   - `VERCEL_TOKEN` — the token from step 3
+   - `VERCEL_ORG_ID` — from the Vercel project (or `.vercel/project.json` `orgId` after `vercel link`)
+   - `VERCEL_PROJECT_ID` — from the Vercel project (or `.vercel/project.json` `projectId`)
+
+After that, every merge to `main` triggers a production deployment. Non-`main` branches can still use Vercel Preview deployments if Git integration is enabled on the project.
