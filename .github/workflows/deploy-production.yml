@@ -43,19 +43,8 @@ jobs:
       - name: Install Vercel CLI
         run: npm install --global vercel@56.2.0
 
-      - name: Pull Vercel Environment Information
-        run: vercel pull --yes --environment=production --token="$VERCEL_TOKEN"
-
-      - name: Build Project Artifacts
-        run: |
-          vercel build --prod --token="$VERCEL_TOKEN"
-          test -d .vercel/output || {
-            echo "::error::Missing .vercel/output after vercel build"
-            exit 1
-          }
-
-      - name: Deploy Project Artifacts to Vercel
-        # Cap wait time — a healthy prebuilt deploy normally finishes in under a minute.
-        # Without this, the CLI can hang forever on "Building…" when a concurrent
-        # Git-triggered Vercel build is also running for the same commit.
-        run: timeout 5m vercel deploy --prebuilt --prod --yes --token="$VERCEL_TOKEN"
+      # Build on Vercel (not --prebuilt) so Production env vars — including Sensitive —
+      # are injected during the Next.js build. `vercel pull` cannot read Sensitive values,
+      # so a local prebuilt build would bake in empty NEXT_PUBLIC_SUPABASE_* keys.
+      - name: Deploy to Vercel Production
+        run: timeout 12m vercel deploy --prod --yes --token="$VERCEL_TOKEN"

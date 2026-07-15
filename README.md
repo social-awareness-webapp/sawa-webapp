@@ -36,14 +36,17 @@ Production deploys run through GitHub Actions when code is pushed to `main` (inc
 ### One-time setup
 
 1. Import this repository in the [Vercel dashboard](https://vercel.com/new) (or link an existing Vercel project).
-2. In the Vercel project, set these **Production** environment variables (see [`.env.example`](.env.example)):
+2. In the Vercel project (`social-awareness-webapp/sawa-webapp`), set these **Production** environment variables (see [`.env.example`](.env.example)):
    - `NEXT_PUBLIC_SUPABASE_URL`
    - `NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY`
+   
+   Use the same values as local `.env`. Do **not** mark these as Sensitive — they are public client keys, and Sensitive values cannot be used by local/`--prebuilt` builds. After adding or changing them, trigger a **new** deployment (not a cache-only redeploy).
 3. Create a Vercel token at [Account Tokens](https://vercel.com/account/tokens).
 4. In the GitHub repo, add these Actions secrets:
    - `VERCEL_TOKEN` — the token from step 3
    - `VERCEL_ORG_ID` — from the Vercel project (or `.vercel/project.json` `orgId` after `vercel link`)
    - `VERCEL_PROJECT_ID` — from the Vercel project (or `.vercel/project.json` `projectId`)
+   - Optional fallbacks if not set on Vercel: `NEXT_PUBLIC_SUPABASE_URL`, `NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY`
 
 After that, every merge to `main` triggers a production deployment via GitHub Actions.
 
