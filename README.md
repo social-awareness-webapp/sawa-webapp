@@ -18,10 +18,10 @@ Run Playwright against the deployed app:
 npm run test:smoke
 ```
 
-Optional authenticated check (also loaded automatically from `.env`):
+Optional authenticated check (loaded from `.env` for admin, community, and business accounts):
 
 ```bash
-SMOKE_USER_EMAIL='...' SMOKE_USER_PASSWORD='...' npm run test:smoke
+npm run test:smoke
 ```
 
 See [docs/smoke-tests.md](docs/smoke-tests.md).

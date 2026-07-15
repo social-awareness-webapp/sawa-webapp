@@ -3,7 +3,12 @@ import { resolve } from "node:path";
 
 import { defineConfig, devices } from "@playwright/test";
 
-import { SMOKE_AUTH_FILE } from "./tests/smoke/helpers";
+import {
+  SMOKE_AUTH_ADMIN,
+  SMOKE_AUTH_BUSINESS,
+  SMOKE_AUTH_COMMUNITY,
+  smokeCredentialsFor,
+} from "./tests/smoke/helpers";
 
 function loadEnvFile(filename: string) {
   const path = resolve(process.cwd(), filename);
@@ -39,16 +44,15 @@ const baseURL = (
   process.env.SMOKE_BASE_URL ?? "https://sawa-webapp-six.vercel.app"
 ).replace(/\/$/, "");
 
-const hasSmokeCredentials = Boolean(
-  process.env.SMOKE_USER_EMAIL?.trim() &&
-    process.env.SMOKE_USER_PASSWORD?.trim()
-);
+const hasAdmin = smokeCredentialsFor("admin").ok;
+const hasCommunity = smokeCredentialsFor("community").ok;
+const hasBusiness = smokeCredentialsFor("business").ok;
+
+const chrome = devices["Desktop Chrome"];
 
 /**
- * End-to-end smoke tests against a deployed environment (default: production).
- *
- * Reads SMOKE_* from `.env` / `.env.local` or the shell.
- * With SMOKE_USER_EMAIL + SMOKE_USER_PASSWORD, also runs authenticated in-app flows.
+ * Production smoke. Role projects are included only when matching credentials
+ * exist in `.env` / the shell.
  */
 export default defineConfig({
   testDir: "./tests/smoke",
@@ -60,7 +64,7 @@ export default defineConfig({
     ["list"],
     ["html", { open: "never", outputFolder: "playwright-report-smoke" }],
   ],
-  timeout: 60_000,
+  timeout: 90_000,
   expect: {
     timeout: 15_000,
   },
@@ -75,24 +79,63 @@ export default defineConfig({
       name: "public",
       testMatch: /public\.spec\.ts/,
       use: {
-        ...devices["Desktop Chrome"],
+        ...chrome,
         storageState: { cookies: [], origins: [] },
       },
     },
-    ...(hasSmokeCredentials
+    ...(hasAdmin
       ? [
           {
-            name: "setup",
+            name: "setup-admin",
             testMatch: /auth\.setup\.ts/,
-            use: { ...devices["Desktop Chrome"] },
+            grep: /authenticate admin/,
+            use: { ...chrome },
           },
           {
-            name: "authenticated",
+            name: "admin",
             testMatch: /authenticated\.spec\.ts/,
-            dependencies: ["setup"],
+            dependencies: ["setup-admin"],
             use: {
-              ...devices["Desktop Chrome"],
-              storageState: SMOKE_AUTH_FILE,
+              ...chrome,
+              storageState: SMOKE_AUTH_ADMIN,
+            },
+          },
+        ]
+      : []),
+    ...(hasCommunity
+      ? [
+          {
+            name: "setup-community",
+            testMatch: /auth\.setup\.ts/,
+            grep: /authenticate community/,
+            use: { ...chrome },
+          },
+          {
+            name: "community",
+            testMatch: /community\.spec\.ts/,
+            dependencies: ["setup-community"],
+            use: {
+              ...chrome,
+              storageState: SMOKE_AUTH_COMMUNITY,
+            },
+          },
+        ]
+      : []),
+    ...(hasBusiness
+      ? [
+          {
+            name: "setup-business",
+            testMatch: /auth\.setup\.ts/,
+            grep: /authenticate business/,
+            use: { ...chrome },
+          },
+          {
+            name: "business",
+            testMatch: /business\.spec\.ts/,
+            dependencies: ["setup-business"],
+            use: {
+              ...chrome,
+              storageState: SMOKE_AUTH_BUSINESS,
             },
           },
         ]

@@ -11,7 +11,8 @@
     "test:design:ui": "playwright test --ui",
     "test:design:report": "playwright show-report",
     "test:smoke": "playwright test -c playwright.smoke.config.ts",
-    "test:smoke:report": "playwright show-report playwright-report-smoke"
+    "test:smoke:report": "playwright show-report playwright-report-smoke",
+    "seed:smoke-accounts": "node tests/smoke/seed-accounts.mjs"
   },
   "dependencies": {
     "@base-ui/react": "^1.6.0",

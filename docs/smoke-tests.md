@@ -4,47 +4,38 @@ End-to-end smoke coverage against a **deployed** SAWA environment (not localhost
 
 ## What it checks
 
-**Public (always)**
+**Public** — homepage, login/register, auth gates, bad login, campaign detail  
 
-| Flow | Assertion |
-|------|-----------|
-| Homepage | Loads, hero + featured + how-it-works, no Supabase/crash error |
-| Login / register | Forms render |
-| Auth gate | `/dashboard` and `/admin` redirect to `/login` when logged out |
-| Bad login | Invalid credentials show an error |
-| Campaign detail | Opens an approved campaign from the homepage when one exists |
+**Admin** (`SMOKE_ADMIN_*` or legacy `SMOKE_USER_*`) — console navigation + sign out  
 
-**Authenticated (requires `SMOKE_USER_*` in `.env`)**
+**Community** (`SMOKE_COMMUNITY_*`) — dashboard + post campaign (submit + draft)  
 
-| Flow | Assertion |
-|------|-----------|
-| Login | Session created; storage saved for later tests |
-| Role home | `/login` redirects to `/admin` or `/dashboard` |
-| Admin console | Overview → Pending → All Campaigns → Users → Business Accounts |
-| User dashboard | Dashboard → My Campaigns → Profile (when smoke user is not admin) |
-| Sign out | Session cleared; `/dashboard` redirects to `/login` again |
+**Business** (`SMOKE_BUSINESS_*`) — dashboard + business campaign form (submit + draft)  
 
-## Run
-
-Put credentials in `.env` (gitignored):
+## Credentials in `.env`
 
 ```bash
 SMOKE_BASE_URL=https://sawa-webapp-six.vercel.app
-SMOKE_USER_EMAIL=admin@sawa.app
-SMOKE_USER_PASSWORD=your-password
+SMOKE_ADMIN_EMAIL=admin@sawa.app
+SMOKE_ADMIN_PASSWORD=...
+SMOKE_COMMUNITY_EMAIL=smoke.community@sawa.app
+SMOKE_COMMUNITY_PASSWORD=...
+SMOKE_BUSINESS_EMAIL=smoke.business@sawa.app
+SMOKE_BUSINESS_PASSWORD=...
 ```
+
+Seed community/business accounts (needs `SUPABASE_SERVICE_ROLE_KEY`):
+
+```bash
+SUPABASE_SERVICE_ROLE_KEY=... node tests/smoke/seed-accounts.mjs
+```
+
+## Run
 
 ```bash
 npx playwright install chromium   # first time only
 npm run test:smoke
-```
-
-Shell overrides still work if you prefer not to use `.env`.
-
-Report:
-
-```bash
 npm run test:smoke:report
 ```
 
-Config: [`playwright.smoke.config.ts`](../playwright.smoke.config.ts) · Specs: [`tests/smoke/`](../tests/smoke/)
+Projects without credentials are omitted automatically.
