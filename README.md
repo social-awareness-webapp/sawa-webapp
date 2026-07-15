@@ -6,19 +6,25 @@ First, run the development server:
 
 ```bash
 npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
 ```
 
 Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+## Smoke tests (SAWA-57)
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+Run Playwright against the deployed app:
+
+```bash
+npm run test:smoke
+```
+
+Optional authenticated check (loaded from `.env` for admin, community, and business accounts):
+
+```bash
+npm run test:smoke
+```
+
+See [docs/smoke-tests.md](docs/smoke-tests.md).
 
 ## Learn More
 
@@ -31,6 +37,23 @@ You can check out [the Next.js GitHub repository](https://github.com/vercel/next
 
 ## Deploy on Vercel
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+Production deploys run through GitHub Actions when code is pushed to `main` (including when a PR is merged). The workflow is [`.github/workflows/deploy-production.yml`](.github/workflows/deploy-production.yml).
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+### One-time setup
+
+1. Import this repository in the [Vercel dashboard](https://vercel.com/new) (or link an existing Vercel project).
+2. In the Vercel project (`social-awareness-webapp/sawa-webapp`), set these **Production** environment variables (see [`.env.example`](.env.example)):
+   - `NEXT_PUBLIC_SUPABASE_URL`
+   - `NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY`
+   
+   Use the same values as local `.env`. Do **not** mark these as Sensitive — they are public client keys, and Sensitive values cannot be used by local/`--prebuilt` builds. After adding or changing them, trigger a **new** deployment (not a cache-only redeploy).
+3. Create a Vercel token at [Account Tokens](https://vercel.com/account/tokens).
+4. In the GitHub repo, add these Actions secrets:
+   - `VERCEL_TOKEN` — the token from step 3
+   - `VERCEL_ORG_ID` — from the Vercel project (or `.vercel/project.json` `orgId` after `vercel link`)
+   - `VERCEL_PROJECT_ID` — from the Vercel project (or `.vercel/project.json` `projectId`)
+   - Optional fallbacks if not set on Vercel: `NEXT_PUBLIC_SUPABASE_URL`, `NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY`
+
+After that, every merge to `main` triggers a production deployment via GitHub Actions.
+
+[`vercel.json`](vercel.json) skips Vercel’s own Git builds on `main` so they do not race the Actions deploy (that race is what stalls the CLI on `Building…`). Preview deploys for other branches still run through Vercel Git.
