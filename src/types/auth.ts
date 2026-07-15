@@ -1,5 +1,7 @@
 export type UserRole = "user" | "business_owner";
 
+export type AppRole = UserRole | "super_admin";
+
 export type RegisterStep = 1 | 2 | 3;
 
 export type RegisterFormData = {

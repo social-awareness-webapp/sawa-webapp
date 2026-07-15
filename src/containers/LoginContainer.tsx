@@ -4,7 +4,12 @@ import { useState } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
 
 import { LoginForm } from "@/components/shared/LoginForm";
-import { loginUser, signInWithGoogle } from "@/services/auth.service";
+import {
+  loginUser,
+  logoutUser,
+  signInWithGoogle,
+} from "@/services/auth.service";
+import { isCurrentUserArchived } from "@/services/profile.service";
 import type { LoginFormData } from "@/types/auth";
 
 export function LoginContainer() {
@@ -31,7 +36,16 @@ export function LoginContainer() {
       return;
     }
 
-    const redirect = searchParams.get("redirect") || "/";
+    if (await isCurrentUserArchived()) {
+      await logoutUser();
+      setError(
+        "This account has been deleted and can no longer be accessed."
+      );
+      setIsLoading(false);
+      return;
+    }
+
+    const redirect = searchParams.get("redirect") || "/dashboard";
     router.refresh();
     router.push(redirect);
   };
@@ -40,7 +54,7 @@ export function LoginContainer() {
     setIsGoogleLoading(true);
     setError(null);
 
-    const redirect = searchParams.get("redirect") || "/";
+    const redirect = searchParams.get("redirect") || "/dashboard";
     const redirectTo = `${window.location.origin}/auth/callback?next=${encodeURIComponent(redirect)}`;
     const { error: googleError } = await signInWithGoogle(redirectTo);
 

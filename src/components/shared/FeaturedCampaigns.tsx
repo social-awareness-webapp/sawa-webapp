@@ -1,9 +1,11 @@
 import Link from "next/link";
+import { Megaphone, Plus } from "lucide-react";
 
 import { CampaignCard } from "@/components/shared/CampaignCard";
 import { CategoryFilterPills } from "@/components/shared/CategoryFilterPills";
 import { buttonVariants } from "@/components/ui/button";
 import type { CampaignFilterCategory } from "@/data/mock-campaigns";
+import { cn } from "@/lib/utils";
 import type { Campaign } from "@/types/campaign";
 
 type FeaturedCampaignsProps = {
@@ -87,9 +89,7 @@ export function FeaturedCampaigns({
         ) : null}
 
         {!isError && !isLoading && campaigns.length === 0 ? (
-          <p className="text-sm text-slate-500">
-            No campaigns found for this category.
-          </p>
+          <EmptyCampaigns category={activeCategory} />
         ) : null}
 
         {!isError && !isLoading && campaigns.length > 0 ? (
@@ -125,5 +125,37 @@ export function FeaturedCampaigns({
         ) : null}
       </div>
     </section>
+  );
+}
+
+function EmptyCampaigns({ category }: { category: CampaignFilterCategory }) {
+  const isFiltered = category !== "All";
+
+  return (
+    <div className="flex flex-col items-center justify-center rounded-2xl border border-dashed border-slate-200 bg-slate-50/60 px-6 py-16 text-center">
+      <div className="flex size-14 items-center justify-center rounded-full bg-[#2B6CB0]/10 text-[#2B6CB0]">
+        <Megaphone className="size-7" />
+      </div>
+      <h3 className="mt-5 text-lg font-semibold text-[#2D3748]">
+        {isFiltered
+          ? `No ${category} campaigns yet`
+          : "No campaigns yet"}
+      </h3>
+      <p className="mt-2 max-w-md text-sm text-slate-500">
+        {isFiltered
+          ? "There aren't any campaigns in this category right now. Check back soon or explore other categories."
+          : "Be the first to rally your community. Start a campaign and it will show up right here."}
+      </p>
+      <Link
+        href="/campaigns/new"
+        className={cn(
+          buttonVariants({ variant: "default" }),
+          "mt-6 gap-2 bg-[#1A365D] px-4 text-white hover:bg-[#2a4a7f]"
+        )}
+      >
+        <Plus className="size-4" />
+        Start a Campaign
+      </Link>
+    </div>
   );
 }

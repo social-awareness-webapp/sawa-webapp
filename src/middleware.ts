@@ -1,10 +1,11 @@
 import { createServerClient } from "@supabase/ssr";
 import { NextResponse, type NextRequest } from "next/server";
 
-type AppRole = "user" | "business_owner" | "super_admin";
+import type { AppRole } from "@/types/auth";
 
 const dashboardPrefixes = ["/dashboard"];
 const adminPrefixes = ["/admin"];
+const composeCampaignPrefixes = ["/campaigns/new"];
 const authRoutes = ["/login", "/register"];
 
 function isAppRole(value: unknown): value is AppRole {
@@ -25,6 +26,13 @@ function isDashboardRoute(pathname: string) {
 
 function isAdminRoute(pathname: string) {
   return matchesPrefix(pathname, adminPrefixes);
+}
+
+function isComposeCampaignRoute(pathname: string) {
+  return (
+    matchesPrefix(pathname, composeCampaignPrefixes) ||
+    (pathname.startsWith("/campaigns/") && pathname.endsWith("/edit"))
+  );
 }
 
 function isAuthRoute(pathname: string) {
@@ -78,7 +86,11 @@ export async function middleware(request: NextRequest) {
   const { pathname } = request.nextUrl;
 
   if (!user) {
-    if (isDashboardRoute(pathname) || isAdminRoute(pathname)) {
+    if (
+      isDashboardRoute(pathname) ||
+      isAdminRoute(pathname) ||
+      isComposeCampaignRoute(pathname)
+    ) {
       const redirectUrl = request.nextUrl.clone();
       redirectUrl.pathname = "/login";
       redirectUrl.search = "";
@@ -90,9 +102,28 @@ export async function middleware(request: NextRequest) {
 
   const { data: profile } = await supabase
     .from("users")
-    .select("role")
+    .select("role, is_archived")
     .eq("id", user.id)
     .single();
+
+  // Archived (soft-deleted) accounts must not be able to use the app, even with
+  // a still-valid session. Sign them out and bounce to login.
+  if (profile?.is_archived) {
+    await supabase.auth.signOut();
+
+    if (isAuthRoute(pathname)) {
+      return supabaseResponse;
+    }
+
+    const redirectUrl = request.nextUrl.clone();
+    redirectUrl.pathname = "/login";
+    redirectUrl.search = "";
+    const redirectResponse = NextResponse.redirect(redirectUrl);
+    supabaseResponse.cookies.getAll().forEach((cookie) => {
+      redirectResponse.cookies.set(cookie);
+    });
+    return redirectResponse;
+  }
 
   const role = isAppRole(profile?.role) ? profile.role : undefined;
 
@@ -111,6 +142,13 @@ export async function middleware(request: NextRequest) {
   }
 
   if (isAdminRoute(pathname) && (!role || !canAccessAdmin(role))) {
+    const redirectUrl = request.nextUrl.clone();
+    redirectUrl.pathname = "/unauthorized";
+    redirectUrl.search = "";
+    return NextResponse.redirect(redirectUrl);
+  }
+
+  if (isComposeCampaignRoute(pathname) && !role) {
     const redirectUrl = request.nextUrl.clone();
     redirectUrl.pathname = "/unauthorized";
     redirectUrl.search = "";

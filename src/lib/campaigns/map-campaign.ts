@@ -40,5 +40,6 @@ export function mapCampaignRow(row: CampaignRow): Campaign {
     category: isCampaignCategory(row.category) ? row.category : "Community",
     progressPercent: row.progress_percent ?? 0,
     daysLeft: row.ends_at ? computeDaysLeft(row.ends_at) : 0,
+    bannerImageUrl: row.banner_image_url,
   };
 }
